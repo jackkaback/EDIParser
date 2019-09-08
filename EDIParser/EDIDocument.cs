@@ -5,9 +5,12 @@ namespace EDIParser
 	public class EDIDocument
 	{
 		private Segment ISA;
+		private Segment ISE;
 		private Segment GS;
+		private List<Envelope> envelopes;
 		private List<Segment> segs;
-		private List<Document> Docs = new List<Document>();
+
+		private Envelope currentEnvlope;
 
 		public EDIDocument(string file)
 		{
@@ -18,6 +21,7 @@ namespace EDIParser
 			{
 				Segment t = new Segment(line.Split(elementTerm));
 
+				//Dealing with the special segments here
 				if (t.type == "ISA")
 				{
 					ISA = t;
@@ -25,7 +29,20 @@ namespace EDIParser
 				}
 				if (t.type == "GS")
 				{
-					GS = t;
+					currentEnvlope.Gs = t;
+					continue;
+				}
+
+				if (t.type == "GE")
+				{
+					currentEnvlope.Ge = t;
+					envelopes.Add(currentEnvlope);
+					currentEnvlope = new Envelope();
+				}
+
+				if (t.type == "ISE")
+				{
+					ISE = t;
 					continue;
 				}
 
@@ -33,10 +50,79 @@ namespace EDIParser
 
 				if (t.type == "SE")
 				{
-					Docs.Add(new Document(segs, GS, ISA));
+					currentEnvlope.addDocument(new Document(segs));
 					segs = new List<Segment>();
 				}
 			}
 		}
+
+		#region ISA Information
+
+		public string ISAAuthorizationQlf()
+		{
+			return ISA.GetElement(1).Trim();
+		}
+		public string ISAAuthorizationInfo()
+		{
+			return ISA.GetElement(2).Trim();
+		}
+		public string ISASecurityQlf()
+		{
+			return ISA.GetElement(3).Trim();
+		}
+		public string ISASecurityInfo()
+		{
+			return ISA.GetElement(4).Trim();
+		}
+		public string ISASenderQlf()
+		{
+			return ISA.GetElement(5).Trim();
+		}
+		public string ISASenderID()
+		{
+			return ISA.GetElement(6).Trim();
+		}
+		public string ISARecieverQlf()
+		{
+			return ISA.GetElement(7).Trim();
+		}
+		public string ISARecieverID()
+		{
+			return ISA.GetElement(8).Trim();
+		}
+		public string ISADate()
+		{
+			return ISA.GetElement(9).Trim();
+		}
+		public string ISATime()
+		{
+			return ISA.GetElement(10).Trim();
+		}
+		public string ISAControlStanders()
+		{
+			return ISA.GetElement(11).Trim();
+		}
+		public string ISAControlVersion()
+		{
+			return ISA.GetElement(12).Trim();
+		}
+		public string ISAControlNumber()
+		{
+			return ISA.GetElement(13).Trim();
+		}
+		public string ISAAcknowledgementRequested()
+		{
+			return ISA.GetElement(14).Trim();
+		}
+		public string ISATestProductionIndictor()
+		{
+			return ISA.GetElement(15).Trim();
+		}
+		public string subElementSeperator()
+		{
+			return ISA.GetElement(16).Trim();
+		}
+
+		#endregion
 	}
 }
