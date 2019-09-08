@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 namespace EDIParser
@@ -5,17 +6,18 @@ namespace EDIParser
 	public class EDIDocument
 	{
 		private Segment ISA;
-		private Segment ISE;
+		private Segment IEA;
 		private Segment GS;
-		private List<Envelope> envelopes;
-		private List<Segment> segs;
+		private List<Envelope> envelopes = new List<Envelope>();
+		private List<Segment> segs = new List<Segment>();
 
 		private Envelope currentEnvlope;
 
 		public EDIDocument(string file)
 		{
-			var elementTerm = file[105];
-			var lines = file.Split(file[107]);
+			var elementTerm = file[104];
+			var segterminator = file[106];
+			var lines = file.Split(segterminator);
 
 			foreach (var line in lines)
 			{
@@ -29,7 +31,7 @@ namespace EDIParser
 				}
 				if (t.type == "GS")
 				{
-					currentEnvlope.Gs = t;
+					currentEnvlope = new Envelope(t);
 					continue;
 				}
 
@@ -37,12 +39,11 @@ namespace EDIParser
 				{
 					currentEnvlope.Ge = t;
 					envelopes.Add(currentEnvlope);
-					currentEnvlope = new Envelope();
 				}
 
-				if (t.type == "ISE")
+				if (t.type == "IEA")
 				{
-					ISE = t;
+					IEA = t;
 					continue;
 				}
 
@@ -54,6 +55,48 @@ namespace EDIParser
 					segs = new List<Segment>();
 				}
 			}
+		}
+		
+		public List<Envelope> GetEnvelopes()
+		{
+			return envelopes;
+		}
+
+		/// <summary>
+		/// Get's the first instance of an envelope or returns an empty envelope
+		/// </summary>
+		/// <param name="type"></param>
+		/// <returns></returns>
+		public Envelope GetEnvelopeOfType(string type)
+		{
+			type = type.ToUpper();
+			foreach (var e in envelopes)
+			{
+				if (e.type == type)
+				{
+					return e;
+				}
+			}
+			
+			return new Envelope();
+		}
+		
+		/// <summary>
+		/// Get's the first instance of an envelope, or throws an error
+		/// </summary>
+		/// <param name="type"></param>
+		/// <returns></returns>
+		public Envelope GetRequiredEnvelope(string type)
+		{
+			type = type.ToUpper();
+			foreach (var e in envelopes)
+			{
+				if (e.type == type)
+				{
+					return e;
+				}
+			}
+			throw new InvalidOperationException("Envelope " + type + " Does not exist");
 		}
 
 		#region ISA Information

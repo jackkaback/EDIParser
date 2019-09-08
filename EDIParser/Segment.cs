@@ -5,7 +5,7 @@ namespace EDIParser
 	public class Segment
 	{
 		public readonly string type;
-		private List<string> elements;
+		private List<string> elements = new List<string>();
 
 		public Segment(string[] values)
 		{

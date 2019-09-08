@@ -6,8 +6,14 @@ namespace EDIParser
 	{
 		private Segment GS;
 		private Segment GE;
+		public readonly string type;
 		private List<Document> Docs = new List<Document>();
 
+		public Envelope(Segment gs)
+		{
+			GS = gs;
+			type = GS.GetElement(1);
+		}
 		public Envelope()
 		{
 			
@@ -27,6 +33,11 @@ namespace EDIParser
 		{
 			get => GS;
 			set => GS = value;
+		}
+
+		public List<Document> GetDocuments()
+		{
+			return Docs;
 		}
 	}
 }
