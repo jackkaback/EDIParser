@@ -82,6 +82,8 @@ namespace EDIParser
 			return retVal;
 		}
 
+		public List<Segment> Segs => segs;
+
 		public string DetailStart
 		{
 			set => detailStart = value;

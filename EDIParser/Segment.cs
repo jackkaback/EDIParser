@@ -34,5 +34,10 @@ namespace EDIParser
 			}
 			return string.Empty;
 		}
+
+		public override string ToString()
+		{
+			return string.Join("*", elements);
+		}
 	}
 }
