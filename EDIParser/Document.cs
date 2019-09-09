@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace EDIParser
 {
@@ -19,9 +20,8 @@ namespace EDIParser
 			this.segs = segs;
 			DocumentType = segs[0].type;
 		}
-		
-		
-		
+
+
 		/// <summary>
 		/// Returns the first instance of a given segment type, else an empty segment
 		/// </summary>
@@ -69,8 +69,8 @@ namespace EDIParser
 		{
 			List<Segment> retVal = new List<Segment>();
 			type = type.ToUpper();
-			
-			
+
+
 			foreach (var s in segs)
 			{
 				if (s.type == type)
@@ -80,6 +80,79 @@ namespace EDIParser
 			}
 
 			return retVal;
+		}
+
+		/// <summary>
+		/// Get's the N1, N2, N3, and N4 of a given loop
+		/// </summary>
+		/// <param name="qualifier"></param>
+		/// <returns></returns>
+		public List<Segment> getN1LoopOfType(string qualifier)
+		{
+			List<Segment> n1Loop = new List<Segment>();
+
+			string[] types = new[] {"N2", "N3", "N3"};
+
+			qualifier = qualifier.ToUpper();
+
+			bool inLoop = false;
+
+			foreach (var s in segs)
+			{
+				if (s.type == "N1" && s.GetElement(1) == qualifier)
+				{
+					n1Loop.Add(s);
+					inLoop = true;
+				}
+
+				if (inLoop && types.Contains(s.type))
+				{
+					n1Loop.Add(s);
+				}
+				else if (inLoop)
+				{
+					break;
+				}
+			}
+
+			return n1Loop;
+		}
+
+		/// <summary>
+		/// Get's the N1, N2, N3, N4 and addition fields of a given loop
+		/// </summary>
+		/// <param name="qualifier"></param>
+		/// <param name="additionFields"></param>
+		/// <returns></returns>
+		public List<Segment> getN1LoopOfType(string qualifier, string[] additionFields)
+		{
+			List<Segment> n1Loop = new List<Segment>();
+
+			string[] types = new[] {"N2", "N3", "N3"};
+
+			qualifier = qualifier.ToUpper();
+
+			bool inLoop = false;
+
+			foreach (var s in segs)
+			{
+				if (s.type == "N1" && s.GetElement(1) == qualifier)
+				{
+					n1Loop.Add(s);
+					inLoop = true;
+				}
+
+				if (inLoop && (types.Contains(s.type) || additionFields.Contains(s.type)))
+				{
+					n1Loop.Add(s);
+				}
+				else if (inLoop)
+				{
+					break;
+				}
+			}
+
+			return n1Loop;
 		}
 
 		public List<Segment> Segs => segs;

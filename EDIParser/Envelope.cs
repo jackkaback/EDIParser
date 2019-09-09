@@ -6,6 +6,10 @@ namespace EDIParser
 	{
 		private Segment GS;
 		private Segment GE;
+		
+		/// <summary>
+		/// The document type expressed as the GS type
+		/// </summary>
 		public readonly string type;
 		private List<Document> Docs = new List<Document>();
 
