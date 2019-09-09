@@ -91,7 +91,7 @@ namespace EDIParser
 		{
 			List<Segment> n1Loop = new List<Segment>();
 
-			string[] types = new[] {"N2", "N3", "N3"};
+			string[] types = new[] {"N2", "N3", "N4"};
 
 			qualifier = qualifier.ToUpper();
 
@@ -103,6 +103,7 @@ namespace EDIParser
 				{
 					n1Loop.Add(s);
 					inLoop = true;
+					continue;
 				}
 
 				if (inLoop && types.Contains(s.type))
@@ -128,7 +129,7 @@ namespace EDIParser
 		{
 			List<Segment> n1Loop = new List<Segment>();
 
-			string[] types = new[] {"N2", "N3", "N3"};
+			string[] types = new[] {"N2", "N3", "N4"};
 
 			qualifier = qualifier.ToUpper();
 
@@ -140,6 +141,7 @@ namespace EDIParser
 				{
 					n1Loop.Add(s);
 					inLoop = true;
+					continue;
 				}
 
 				if (inLoop && (types.Contains(s.type) || additionFields.Contains(s.type)))
