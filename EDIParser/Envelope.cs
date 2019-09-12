@@ -19,6 +19,10 @@ namespace EDIParser
 			GS = gs;
 			type = GS.GetElement(1);
 		}
+		
+		/// <summary>
+		/// For making a Null object
+		/// </summary>
 		public Envelope()
 		{
 			
@@ -56,5 +60,14 @@ namespace EDIParser
 				yield return doc;
 			}
 		}
+
+		#region Special GS/GE information
+
+		public string GEDocumentCount()
+		{
+			return Ge.GetElement(1);
+		}
+
+		#endregion
 	}
 }

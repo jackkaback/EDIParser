@@ -12,6 +12,9 @@ namespace EDIParser
 		/// </summary>
 		public readonly string DocumentType;
 
+		private Segment ST;
+		private Segment SE;
+
 		private List<Segment> segments;
 		private List<List<Segment>> Details;
 		private string detailStart;
@@ -20,6 +23,8 @@ namespace EDIParser
 		{
 			this.segments = segments;
 			DocumentType = segments[0].type;
+			ST = segments[0];
+			SE = segments.Last();
 		}
 
 
@@ -213,5 +218,14 @@ namespace EDIParser
 				yield return segment;
 			}
 		}
+
+		#region Special ST/SE information
+		
+		public string SEGetSECount()
+		{
+			return SE.GetElement(1);
+		}
+
+		#endregion
 	}
 }

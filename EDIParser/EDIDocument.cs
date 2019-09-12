@@ -167,6 +167,11 @@ namespace EDIParser
 			return ISA.GetElement(16).Trim();
 		}
 
+		public string IEAEnvelopeCount()
+		{
+			return IEA.GetElement(1);
+		}
+
 		#endregion
 
 		/// <summary>

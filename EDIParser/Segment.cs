@@ -17,6 +17,9 @@ namespace EDIParser
 			}
 		}
 
+		/// <summary>
+		/// For making a null object
+		/// </summary>
 		public Segment()
 		{
 		}
@@ -35,9 +38,20 @@ namespace EDIParser
 			return string.Empty;
 		}
 
+		/// <summary>
+		/// This shouldn't be used to write the data out, bt rather for debugging or to write to console
+		/// </summary>
+		/// <returns></returns>
 		public override string ToString()
 		{
-			return string.Join("*", elements);
+			return string.Join("*", elements) + "~";
+		}
+		
+		public IEnumerable<string> GetEnumerable() {
+			foreach (var e in elements)
+			{
+				yield return e;
+			}
 		}
 	}
 }
