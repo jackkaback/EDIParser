@@ -27,6 +27,21 @@ namespace EDIParser
 			SE = segments.Last();
 		}
 
+		
+		public bool DoesSegExist(string type)
+		{
+			foreach (var segment in segments)
+			{
+				if (segment.type == type)
+				{
+					return true;
+				}
+			}
+
+			return false;
+		}
+		
+		
 
 		/// <summary>
 		/// Returns the first instance of a given segment type, else an empty segment
@@ -86,6 +101,19 @@ namespace EDIParser
 			}
 
 			return retVal;
+		}
+
+		public bool DoesN1LoopExist(string type)
+		{
+			foreach (var segment in segments)
+			{
+				if (segment.type == "N1" && segment.GetElement(1) == type)
+				{
+					return true;
+				}
+			}
+
+			return false;
 		}
 
 		/// <summary>
