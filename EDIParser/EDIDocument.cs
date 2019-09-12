@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 
 namespace EDIParser
@@ -9,7 +10,7 @@ namespace EDIParser
 		private Segment IEA;
 		private Segment GS;
 		private List<Envelope> envelopes = new List<Envelope>();
-		private List<Segment> segs = new List<Segment>();
+		private List<Segment> segments = new List<Segment>();
 
 		private Envelope currentEnvlope;
 
@@ -47,12 +48,12 @@ namespace EDIParser
 					continue;
 				}
 
-				segs.Add(t);
+				segments.Add(t);
 
 				if (t.type == "SE")
 				{
-					currentEnvlope.addDocument(new Document(segs));
-					segs = new List<Segment>();
+					currentEnvlope.addDocument(new Document(segments));
+					segments = new List<Segment>();
 				}
 			}
 		}
@@ -167,5 +168,18 @@ namespace EDIParser
 		}
 
 		#endregion
+
+		/// <summary>
+		/// Makes the envelopes in the ansi document Enumerable
+		/// </summary>
+		/// <returns></returns>
+		public IEnumerator<Envelope> GetEnumerator()
+		{
+			foreach (var envelope in envelopes)
+			{
+				yield return envelope;
+			}
+		}
+
 	}
 }

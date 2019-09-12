@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 
 namespace EDIParser
@@ -42,6 +43,18 @@ namespace EDIParser
 		public List<Document> GetDocuments()
 		{
 			return Docs;
+		}
+
+		/// <summary>
+		/// Makes the document in the envelope Enumerable
+		/// </summary>
+		/// <returns></returns>
+		public IEnumerator<Document> GetEnumerator()
+		{
+			foreach (var doc in Docs)
+			{
+				yield return doc;
+			}
 		}
 	}
 }

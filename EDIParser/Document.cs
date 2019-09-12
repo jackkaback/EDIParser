@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -11,14 +12,14 @@ namespace EDIParser
 		/// </summary>
 		public readonly string DocumentType;
 
-		private List<Segment> segs;
+		private List<Segment> segments;
 		private List<List<Segment>> Details;
 		private string detailStart;
 
-		public Document(List<Segment> segs)
+		public Document(List<Segment> segments)
 		{
-			this.segs = segs;
-			DocumentType = segs[0].type;
+			this.segments = segments;
+			DocumentType = segments[0].type;
 		}
 
 
@@ -30,7 +31,7 @@ namespace EDIParser
 		public Segment GetSegType(string type)
 		{
 			type = type.ToUpper();
-			foreach (var s in segs)
+			foreach (var s in segments)
 			{
 				if (s.type == type)
 				{
@@ -49,7 +50,7 @@ namespace EDIParser
 		public Segment GetRequiredSegType(string type)
 		{
 			type = type.ToUpper();
-			foreach (var s in segs)
+			foreach (var s in segments)
 			{
 				if (s.type == type)
 				{
@@ -71,7 +72,7 @@ namespace EDIParser
 			type = type.ToUpper();
 
 
-			foreach (var s in segs)
+			foreach (var s in segments)
 			{
 				if (s.type == type)
 				{
@@ -80,6 +81,41 @@ namespace EDIParser
 			}
 
 			return retVal;
+		}
+
+		/// <summary>
+		/// Get's the entirety of the N1 Loop
+		/// </summary>
+		/// <param name="qualifier"></param>
+		/// <returns></returns>
+		public List<Segment> getWholeN1Loop(string qualifier)
+		{
+			List<Segment> n1Loop = new List<Segment>();
+
+			qualifier = qualifier.ToUpper();
+
+			bool inLoop = false;
+
+			foreach (var s in segments)
+			{
+				if (s.type == "N1" && s.GetElement(1) == qualifier)
+				{
+					n1Loop.Add(s);
+					inLoop = true;
+					continue;
+				}
+				if (inLoop && (s.type == "N1" || s.type == detailStart))
+				{
+					break;
+				}
+
+				if (inLoop)
+				{
+					n1Loop.Add(s);
+				}
+			}
+
+			return n1Loop;
 		}
 
 		/// <summary>
@@ -97,7 +133,7 @@ namespace EDIParser
 
 			bool inLoop = false;
 
-			foreach (var s in segs)
+			foreach (var s in segments)
 			{
 				if (s.type == "N1" && s.GetElement(1) == qualifier)
 				{
@@ -135,7 +171,7 @@ namespace EDIParser
 
 			bool inLoop = false;
 
-			foreach (var s in segs)
+			foreach (var s in segments)
 			{
 				if (s.type == "N1" && s.GetElement(1) == qualifier)
 				{
@@ -143,25 +179,39 @@ namespace EDIParser
 					inLoop = true;
 					continue;
 				}
+				
+				//You've gone to far
+				if ((s.type == "N1" && inLoop) || s.type == detailStart)
+				{
+					break;
+				}
 
 				if (inLoop && (types.Contains(s.type) || additionFields.Contains(s.type)))
 				{
 					n1Loop.Add(s);
-				}
-				else if (inLoop)
-				{
-					break;
 				}
 			}
 
 			return n1Loop;
 		}
 
-		public List<Segment> Segs => segs;
+		public List<Segment> Segments => segments;
 
 		public string DetailStart
 		{
 			set => detailStart = value;
+		}
+
+		/// <summary>
+		/// Makes the segments in the document Enumerable
+		/// </summary>
+		/// <returns></returns>
+		public IEnumerator<Segment> GetEnumerator()
+		{
+			foreach (var segment in segments)
+			{
+				yield return segment;
+			}
 		}
 	}
 }
