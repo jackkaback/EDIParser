@@ -7,11 +7,12 @@ namespace EDIParser
 	{
 		private Segment GS;
 		private Segment GE;
-		
+
 		/// <summary>
 		/// The document type expressed as the GS type
 		/// </summary>
 		public readonly string type;
+
 		private List<Document> Docs = new List<Document>();
 
 		public Envelope(Segment gs)
@@ -19,25 +20,25 @@ namespace EDIParser
 			GS = gs;
 			type = GS.GetElement(1);
 		}
-		
+
 		/// <summary>
 		/// For making a Null object
 		/// </summary>
 		public Envelope()
 		{
-			
 		}
 
 		public void addDocument(Document d)
 		{
 			Docs.Add(d);
 		}
-		
+
 		public Segment Ge
 		{
 			get => GE;
 			set => GE = value;
 		}
+
 		public Segment Gs
 		{
 			get => GS;
@@ -69,5 +70,18 @@ namespace EDIParser
 		}
 
 		#endregion
+
+		public override string ToString()
+		{
+			string retval = GS + "\r\n";
+
+			foreach (var d in Docs)
+			{
+				retval += d.ToString();
+			}
+
+			retval += GE + "\r\n";
+			return retval;
+		}
 	}
 }

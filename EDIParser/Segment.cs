@@ -5,11 +5,27 @@ namespace EDIParser
 	public class Segment
 	{
 		public readonly string type;
+		
+		private char elementTerm = '*';
+		private char segterminator = '~';
+		
 		private List<string> elements = new List<string>();
 
 		public Segment(string[] values)
 		{
 			type = values[0];
+			
+			foreach (var i in values)
+			{
+				elements.Add(i);
+			}
+		}
+		
+		public Segment(string[] values, char segterm, char eleterm)
+		{
+			type = values[0];
+			elementTerm = eleterm;
+			segterminator = segterm;
 			
 			foreach (var i in values)
 			{
@@ -44,7 +60,7 @@ namespace EDIParser
 		/// <returns></returns>
 		public override string ToString()
 		{
-			return string.Join("*", elements) + "~";
+			return string.Join(elementTerm, elements) + segterminator;
 		}
 		
 		public IEnumerable<string> GetEnumerable() {

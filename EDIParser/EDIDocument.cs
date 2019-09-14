@@ -8,6 +8,8 @@ namespace EDIParser
 	{
 		private Segment ISA;
 		private Segment IEA;
+		private char elementTerm;
+		private char segterminator;
 		private Segment GS;
 		private List<Envelope> envelopes = new List<Envelope>();
 		private List<Segment> segments = new List<Segment>();
@@ -16,13 +18,13 @@ namespace EDIParser
 
 		public EDIDocument(string file)
 		{
-			var elementTerm = file[104];
-			var segterminator = file[106];
+			elementTerm = file[104];
+			segterminator = file[106];
 			var lines = file.Split(segterminator);
 
 			foreach (var line in lines)
 			{
-				Segment t = new Segment(line.Split(elementTerm));
+				Segment t = new Segment(line.Split(elementTerm), segterminator, elementTerm);
 
 				//Dealing with the special segments here
 				if (t.type == "ISA")
@@ -30,6 +32,7 @@ namespace EDIParser
 					ISA = t;
 					continue;
 				}
+
 				if (t.type == "GS")
 				{
 					currentEnvlope = new Envelope(t);
@@ -40,6 +43,7 @@ namespace EDIParser
 				{
 					currentEnvlope.Ge = t;
 					envelopes.Add(currentEnvlope);
+					continue;
 				}
 
 				if (t.type == "IEA")
@@ -57,7 +61,7 @@ namespace EDIParser
 				}
 			}
 		}
-		
+
 		public List<Envelope> GetEnvelopes()
 		{
 			return envelopes;
@@ -78,10 +82,10 @@ namespace EDIParser
 					return e;
 				}
 			}
-			
+
 			return new Envelope();
 		}
-		
+
 		/// <summary>
 		/// Get's the first instance of an envelope, or throws an error
 		/// </summary>
@@ -97,6 +101,7 @@ namespace EDIParser
 					return e;
 				}
 			}
+
 			throw new InvalidOperationException("Envelope " + type + " Does not exist");
 		}
 
@@ -106,62 +111,77 @@ namespace EDIParser
 		{
 			return ISA.GetElement(1).Trim();
 		}
+
 		public string ISAAuthorizationInfo()
 		{
 			return ISA.GetElement(2).Trim();
 		}
+
 		public string ISASecurityQlf()
 		{
 			return ISA.GetElement(3).Trim();
 		}
+
 		public string ISASecurityInfo()
 		{
 			return ISA.GetElement(4).Trim();
 		}
+
 		public string ISASenderQlf()
 		{
 			return ISA.GetElement(5).Trim();
 		}
+
 		public string ISASenderID()
 		{
 			return ISA.GetElement(6).Trim();
 		}
+
 		public string ISARecieverQlf()
 		{
 			return ISA.GetElement(7).Trim();
 		}
+
 		public string ISARecieverID()
 		{
 			return ISA.GetElement(8).Trim();
 		}
+
 		public string ISADate()
 		{
 			return ISA.GetElement(9).Trim();
 		}
+
 		public string ISATime()
 		{
 			return ISA.GetElement(10).Trim();
 		}
+
 		public string ISAControlStanders()
 		{
 			return ISA.GetElement(11).Trim();
 		}
+
 		public string ISAControlVersion()
 		{
 			return ISA.GetElement(12).Trim();
 		}
+
 		public string ISAControlNumber()
 		{
 			return ISA.GetElement(13).Trim();
 		}
+
 		public string ISAAcknowledgementRequested()
 		{
 			return ISA.GetElement(14).Trim();
 		}
+
 		public string ISATestProductionIndictor()
 		{
 			return ISA.GetElement(15).Trim();
 		}
+
 		public string subElementSeperator()
 		{
 			return ISA.GetElement(16).Trim();
@@ -186,5 +206,25 @@ namespace EDIParser
 			}
 		}
 
+		public int EnvelopeCount()
+		{
+			return envelopes.Count;
+		}
+
+		public Segment Isa => ISA;
+		public Segment Iea => IEA;
+
+		public override string ToString()
+		{
+			string retval = ISA + "\r\n";
+
+			foreach (var e in envelopes)
+			{
+				retval += e.ToString();
+			}
+
+			retval += IEA + "\r\n";
+			return retval;
+		}
 	}
 }

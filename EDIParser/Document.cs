@@ -27,7 +27,6 @@ namespace EDIParser
 			SE = segments.Last();
 		}
 
-		
 		public bool DoesSegExist(string type)
 		{
 			foreach (var segment in segments)
@@ -40,8 +39,16 @@ namespace EDIParser
 
 			return false;
 		}
-		
-		
+
+//		public bool DoesSegExistFromPattern(string type, params string[] pattern)
+//		{
+//			foreach (var segment in segments)
+//			{
+//				throw Exception NotImplementedException;
+//			}
+//
+//			return false;
+//		}
 
 		/// <summary>
 		/// Returns the first instance of a given segment type, else an empty segment
@@ -91,7 +98,6 @@ namespace EDIParser
 			List<Segment> retVal = new List<Segment>();
 			type = type.ToUpper();
 
-
 			foreach (var s in segments)
 			{
 				if (s.type == type)
@@ -137,6 +143,7 @@ namespace EDIParser
 					inLoop = true;
 					continue;
 				}
+
 				if (inLoop && (s.type == "N1" || s.type == detailStart))
 				{
 					break;
@@ -212,7 +219,7 @@ namespace EDIParser
 					inLoop = true;
 					continue;
 				}
-				
+
 				//You've gone to far
 				if ((s.type == "N1" && inLoop) || s.type == detailStart)
 				{
@@ -248,12 +255,23 @@ namespace EDIParser
 		}
 
 		#region Special ST/SE information
-		
+
 		public string SEGetSECount()
 		{
 			return SE.GetElement(1);
 		}
 
 		#endregion
+
+		public override string ToString()
+		{
+			string retval = "";
+
+			foreach (var s in segments)
+			{
+				retval += s.ToString() + "\r\n";
+			}
+			return retval;
+		}
 	}
 }
