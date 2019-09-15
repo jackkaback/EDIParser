@@ -5,20 +5,21 @@ namespace EDIParser
 {
 	public class Envelope
 	{
-		private Segment GS;
-		private Segment GE;
+		private Segment _GS;
+		private Segment _GE;
+		private string _toString = "";
 
 		/// <summary>
 		/// The document type expressed as the GS type
 		/// </summary>
 		public readonly string type;
 
-		private List<Document> Docs = new List<Document>();
+		private List<Document> _Docs = new List<Document>();
 
 		public Envelope(Segment gs)
 		{
-			GS = gs;
-			type = GS.GetElement(1);
+			_GS = gs;
+			type = _GS.GetElement(1);
 		}
 
 		/// <summary>
@@ -30,24 +31,20 @@ namespace EDIParser
 
 		public void addDocument(Document d)
 		{
-			Docs.Add(d);
+			_Docs.Add(d);
 		}
 
 		public Segment Ge
 		{
-			get => GE;
-			set => GE = value;
+			get => _GE;
+			set => _GE = value;
 		}
 
-		public Segment Gs
-		{
-			get => GS;
-			set => GS = value;
-		}
+		public Segment Gs => _GS;
 
 		public List<Document> GetDocuments()
 		{
-			return Docs;
+			return _Docs;
 		}
 
 		/// <summary>
@@ -56,7 +53,7 @@ namespace EDIParser
 		/// <returns></returns>
 		public IEnumerator<Document> GetEnumerator()
 		{
-			foreach (var doc in Docs)
+			foreach (var doc in _Docs)
 			{
 				yield return doc;
 			}
@@ -73,15 +70,28 @@ namespace EDIParser
 
 		public override string ToString()
 		{
-			string retval = GS + "\r\n";
+			return _toString;
+		}
 
-			foreach (var d in Docs)
+		public void GenerateToString()
+		{
+			_toString = _GS + "\r\n";
+
+			foreach (var d in _Docs)
 			{
-				retval += d.ToString();
+				_toString += d.ToString();
 			}
 
-			retval += GE + "\r\n";
-			return retval;
+			_toString += _GE + "\r\n";
+		}
+		
+		/// <summary>
+		/// Says if the GE count is the same as the actual number of documents in the envelope
+		/// </summary>
+		/// <returns></returns>
+		public bool DoDocumentCountsMatch()
+		{
+			return _Docs.Count == int.Parse(GEDocumentCount());
 		}
 	}
 }

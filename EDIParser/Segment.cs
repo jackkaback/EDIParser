@@ -6,10 +6,10 @@ namespace EDIParser
 	{
 		public readonly string type;
 		
-		private char elementTerm = '*';
-		private char segterminator = '~';
+		private char _elementTerm = '*';
+		private char _segterminator = '~';
 		
-		private List<string> elements = new List<string>();
+		private List<string> _elements = new List<string>();
 
 		public Segment(string[] values)
 		{
@@ -17,19 +17,19 @@ namespace EDIParser
 			
 			foreach (var i in values)
 			{
-				elements.Add(i);
+				_elements.Add(i);
 			}
 		}
 		
 		public Segment(string[] values, char segterm, char eleterm)
 		{
 			type = values[0];
-			elementTerm = eleterm;
-			segterminator = segterm;
+			_elementTerm = eleterm;
+			_segterminator = segterm;
 			
 			foreach (var i in values)
 			{
-				elements.Add(i);
+				_elements.Add(i);
 			}
 		}
 
@@ -47,9 +47,9 @@ namespace EDIParser
 		/// <returns>The I'th element or an empty string'</returns>
 		public string GetElement(int i)
 		{
-			if (elements.Count > i)
+			if (_elements.Count > i)
 			{
-				return elements[i];
+				return _elements[i];
 			}
 			return string.Empty;
 		}
@@ -60,11 +60,11 @@ namespace EDIParser
 		/// <returns></returns>
 		public override string ToString()
 		{
-			return string.Join(elementTerm, elements) + segterminator;
+			return string.Join(_elementTerm, _elements) + _segterminator;
 		}
 		
 		public IEnumerable<string> GetEnumerable() {
-			foreach (var e in elements)
+			foreach (var e in _elements)
 			{
 				yield return e;
 			}

@@ -12,24 +12,37 @@ namespace EDIParser
 		/// </summary>
 		public readonly string DocumentType;
 
-		private Segment ST;
-		private Segment SE;
+		private Segment _ST;
+		private Segment _SE;
+		private string _toString;
 
-		private List<Segment> segments;
-		private List<List<Segment>> Details;
-		private string detailStart;
+		private List<Segment> _segments;
+		private List<List<Segment>> _details;
+		private string _detailStart;
 
 		public Document(List<Segment> segments)
 		{
-			this.segments = segments;
+			this._segments = segments;
 			DocumentType = segments[0].type;
-			ST = segments[0];
-			SE = segments.Last();
+			_ST = segments[0];
+			_SE = segments.Last();
+
+			GenerateToString();
+		}
+
+		private void GenerateToString()
+		{
+			_toString = "";
+
+			foreach (var s in _segments)
+			{
+				_toString += s.ToString() + "\r\n";
+			}
 		}
 
 		public bool DoesSegExist(string type)
 		{
-			foreach (var segment in segments)
+			foreach (var segment in _segments)
 			{
 				if (segment.type == type)
 				{
@@ -58,7 +71,7 @@ namespace EDIParser
 		public Segment GetSegType(string type)
 		{
 			type = type.ToUpper();
-			foreach (var s in segments)
+			foreach (var s in _segments)
 			{
 				if (s.type == type)
 				{
@@ -77,7 +90,7 @@ namespace EDIParser
 		public Segment GetRequiredSegType(string type)
 		{
 			type = type.ToUpper();
-			foreach (var s in segments)
+			foreach (var s in _segments)
 			{
 				if (s.type == type)
 				{
@@ -98,7 +111,7 @@ namespace EDIParser
 			List<Segment> retVal = new List<Segment>();
 			type = type.ToUpper();
 
-			foreach (var s in segments)
+			foreach (var s in _segments)
 			{
 				if (s.type == type)
 				{
@@ -111,7 +124,7 @@ namespace EDIParser
 
 		public bool DoesN1LoopExist(string type)
 		{
-			foreach (var segment in segments)
+			foreach (var segment in _segments)
 			{
 				if (segment.type == "N1" && segment.GetElement(1) == type)
 				{
@@ -135,7 +148,7 @@ namespace EDIParser
 
 			bool inLoop = false;
 
-			foreach (var s in segments)
+			foreach (var s in _segments)
 			{
 				if (s.type == "N1" && s.GetElement(1) == qualifier)
 				{
@@ -144,7 +157,7 @@ namespace EDIParser
 					continue;
 				}
 
-				if (inLoop && (s.type == "N1" || s.type == detailStart))
+				if (inLoop && (s.type == "N1" || s.type == _detailStart))
 				{
 					break;
 				}
@@ -173,7 +186,7 @@ namespace EDIParser
 
 			bool inLoop = false;
 
-			foreach (var s in segments)
+			foreach (var s in _segments)
 			{
 				if (s.type == "N1" && s.GetElement(1) == qualifier)
 				{
@@ -211,7 +224,7 @@ namespace EDIParser
 
 			bool inLoop = false;
 
-			foreach (var s in segments)
+			foreach (var s in _segments)
 			{
 				if (s.type == "N1" && s.GetElement(1) == qualifier)
 				{
@@ -221,7 +234,7 @@ namespace EDIParser
 				}
 
 				//You've gone to far
-				if ((s.type == "N1" && inLoop) || s.type == detailStart)
+				if ((s.type == "N1" && inLoop) || s.type == _detailStart)
 				{
 					break;
 				}
@@ -235,11 +248,11 @@ namespace EDIParser
 			return n1Loop;
 		}
 
-		public List<Segment> Segments => segments;
+		public List<Segment> Segments => _segments;
 
 		public string DetailStart
 		{
-			set => detailStart = value;
+			set => _detailStart = value;
 		}
 
 		/// <summary>
@@ -248,7 +261,7 @@ namespace EDIParser
 		/// <returns></returns>
 		public IEnumerator<Segment> GetEnumerator()
 		{
-			foreach (var segment in segments)
+			foreach (var segment in _segments)
 			{
 				yield return segment;
 			}
@@ -258,20 +271,23 @@ namespace EDIParser
 
 		public string SEGetSECount()
 		{
-			return SE.GetElement(1);
+			return _SE.GetElement(1);
 		}
 
 		#endregion
 
 		public override string ToString()
 		{
-			string retval = "";
+			return _toString;
+		}
 
-			foreach (var s in segments)
-			{
-				retval += s.ToString() + "\r\n";
-			}
-			return retval;
+		/// <summary>
+		/// Says if the SE count is the same as the actual number of segments in the envelope
+		/// </summary>
+		/// <returns></returns>
+		public bool DoSegemnetCountsMatch()
+		{
+			return _segments.Count == int.Parse(SEGetSECount());
 		}
 	}
 }
