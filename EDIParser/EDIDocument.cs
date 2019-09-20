@@ -89,6 +89,25 @@ namespace EDIParser
 		}
 
 		/// <summary>
+		/// Says if an Envelope exists
+		/// </summary>
+		/// <param name="type"></param>
+		/// <returns></returns>
+		public bool DoesEnvelopeExist(string type)
+		{
+			type = type.ToUpper();
+			foreach (var e in _envelopes)
+			{
+				if (e.type == type)
+				{
+					return true;
+				}
+			}
+
+			return false;
+		}
+
+		/// <summary>
 		/// Get's the first instance of an envelope, or throws an error
 		/// </summary>
 		/// <param name="type"></param>
@@ -104,7 +123,7 @@ namespace EDIParser
 				}
 			}
 
-			throw new InvalidOperationException("Envelope " + type + " Does not exist");
+			throw new Exception("Envelope does not exist");
 		}
 
 		#region ISA Information
@@ -236,7 +255,7 @@ namespace EDIParser
 
 			_toString += _IEA + "\r\n";
 		}
-		
+
 		public override string ToString()
 		{
 			return _toString;
