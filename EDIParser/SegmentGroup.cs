@@ -18,5 +18,54 @@ namespace EDIParser
 				yield return segment;
 			}
 		}
+
+		public Segment getSegementOfType(string type)
+		{
+			foreach (var s in _segments)
+			{
+				if (s.type == type)
+				{
+					return s;
+				}
+			}
+			
+			return new Segment();
+		}
+
+		/// <summary>
+		/// returns a segment with a specific pattern, null/empty/whitespaces are wildcards
+		/// </summary>
+		/// <param name="type"></param>
+		/// <param name="pattern"></param>
+		/// <returns></returns>
+		public Segment GetSegmentWithPattern(string type, params string[] pattern)
+		{
+
+			foreach (var seg in _segments)
+			{
+				if (seg.type == type)
+				{
+					for (int ii = 0; ii < pattern.Length; ii++)
+					{
+						if (string.IsNullOrWhiteSpace(pattern[ii]))
+						{
+							continue;
+						}
+
+						if (pattern[ii] != seg.GetElement(ii))
+						{
+							break;
+						}
+
+						if (ii == pattern.Length - 1)
+						{
+							return seg;
+						}
+					}
+				}
+			}
+			
+			return new Segment();
+		}
 	}
 }
