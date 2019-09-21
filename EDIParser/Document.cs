@@ -17,9 +17,13 @@ namespace EDIParser
 		private string _toString;
 
 		private List<Segment> _segments;
-		private List<List<Segment>> _details;
+//		private List<List<Segment>> _details;
 		private string _detailStart;
 
+		public SegmentGroup header;
+		public List<SegmentGroup> deatils;
+		public SegmentGroup trailer;
+		
 		public Document(List<Segment> segments)
 		{
 			this._segments = segments;
@@ -120,6 +124,54 @@ namespace EDIParser
 			}
 
 			return retVal;
+		}
+
+		/// <summary>
+		/// Defines and sets the segments by type
+		/// </summary>
+		/// <param name="itemLevelType"></param>
+		/// <param name="trailerType"></param>
+		public void DefineSegmentGroups(string itemLevelType, string trailerType)
+		{
+			//0 header, 1 item, 2 trailer 
+			int position = 0;
+			_detailStart = itemLevelType;
+			
+			foreach (var segment in _segments)
+			{
+				if (segment.type == "ST" || segment.type == "SE")
+				{
+					continue;
+				}
+
+				if (position == 0 && segment.type == itemLevelType)
+				{
+					position = 1;
+				}
+
+				if (position == 1 && segment.type == trailerType)
+				{
+					position = 2;
+				}
+
+
+				switch (position)
+				{
+					case 0:
+						header.add(segment);
+						break;
+					case 1:
+						if (segment.type == itemLevelType)
+						{
+							deatils.Add(new SegmentGroup());
+						}
+						deatils.Last().add(segment);
+						break;
+					case 2:
+						trailer.add(segment);
+						break;
+				}
+			}
 		}
 
 		public bool DoesN1LoopExist(string type)
@@ -249,11 +301,6 @@ namespace EDIParser
 		}
 
 		public List<Segment> Segments => _segments;
-
-		public string DetailStart
-		{
-			set => _detailStart = value;
-		}
 
 		/// <summary>
 		/// Makes the segments in the document Enumerable
