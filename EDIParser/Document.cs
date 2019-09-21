@@ -127,10 +127,10 @@ namespace EDIParser
 		}
 
 		/// <summary>
-		/// Defines and sets the segments by type
+		/// Defines and sets the segments by type so the header, details, and trailers can be worked with
 		/// </summary>
 		/// <param name="itemLevelType"></param>
-		/// <param name="trailerType"></param>
+		/// <param name="trailerType"></param>s
 		public void DefineSegmentGroups(string itemLevelType, string trailerType)
 		{
 			//0 header, 1 item, 2 trailer 
@@ -230,15 +230,31 @@ namespace EDIParser
 		/// <returns></returns>
 		public List<Segment> getN1LoopOfType(string qualifier)
 		{
-			List<Segment> n1Loop = new List<Segment>();
+			qualifier = qualifier.ToUpper();
+			if (header == new SegmentGroup())
+			{
+				return DoN1FromDocument(qualifier);
+			}
+			else
+			{
+				return DoN1FromHeader(qualifier);
+			}
+		}
 
+		/// <summary>
+		/// this is quicker since it just runs through the header if it's defined
+		/// </summary>
+		/// <param name="qualifier"></param>
+		/// <returns></returns>
+		private List<Segment> DoN1FromHeader(string qualifier)
+		{
+			List<Segment> n1Loop = new List<Segment>();
+             
 			string[] types = new[] {"N2", "N3", "N4"};
 
-			qualifier = qualifier.ToUpper();
-
 			bool inLoop = false;
-
-			foreach (var s in _segments)
+             
+			foreach (var s in header)
 			{
 				if (s.type == "N1" && s.GetElement(1) == qualifier)
 				{
@@ -246,7 +262,7 @@ namespace EDIParser
 					inLoop = true;
 					continue;
 				}
-
+             
 				if (inLoop && types.Contains(s.type))
 				{
 					n1Loop.Add(s);
@@ -256,8 +272,80 @@ namespace EDIParser
 					break;
 				}
 			}
-
+             
 			return n1Loop;
+		}
+
+		/// <summary>
+		/// This s the old way of doing it, iterating through the whole document
+		/// </summary>
+		/// <param name="qualifier"></param>
+		/// <returns></returns>
+		private List<Segment> DoN1FromDocument(string qualifier)
+		{
+			List<Segment> n1Loop = new List<Segment>();
+            
+			string[] types = new[] {"N2", "N3", "N4"};
+
+			bool inLoop = false;
+            
+			foreach (var s in _segments)
+			{
+				if (s.type == "N1" && s.GetElement(1) == qualifier)
+				{
+					n1Loop.Add(s);
+					inLoop = true;
+					continue;
+				}
+            
+				if (inLoop && types.Contains(s.type))
+				{
+					n1Loop.Add(s);
+				}
+				else if (inLoop)
+				{
+					break;
+				}
+			}
+            
+			return n1Loop;
+		}
+		
+		/// <summary>
+		/// returns a segment with a specific pattern, null/empty/whitespaces are wildcards&#xA;
+		/// It's faster to grab from the specific part of the document if you know where it is
+		/// </summary>
+		/// <param name="type"></param>
+		/// <param name="pattern"></param>
+		/// <returns></returns>
+		public Segment GetSegmentWithPattern(string type, params string[] pattern)
+		{
+
+			foreach (var seg in _segments)
+			{
+				if (seg.type == type)
+				{
+					for (int ii = 0; ii < pattern.Length; ii++)
+					{
+						if (string.IsNullOrWhiteSpace(pattern[ii]))
+						{
+							continue;
+						}
+
+						if (pattern[ii] != seg.GetElement(ii))
+						{
+							break;
+						}
+
+						if (ii == pattern.Length - 1)
+						{
+							return seg;
+						}
+					}
+				}
+			}
+			
+			return new Segment();
 		}
 
 		/// <summary>
