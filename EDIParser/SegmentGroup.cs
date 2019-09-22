@@ -67,5 +67,39 @@ namespace EDIParser
 			
 			return new Segment();
 		}
+		
+		/// <summary>
+		/// Checks is a segment exists with a given pattern
+		/// </summary>
+		/// <param name="type"></param>
+		/// <param name="pattern"></param>
+		/// <returns></returns>
+		public bool DoesSegExistFromPattern(string type, params string[] pattern)
+		{
+			foreach (var seg in _segments)
+			{
+				if (seg.type == type)
+				{
+					for (int ii = 0; ii < pattern.Length; ii++)
+					{
+						if (string.IsNullOrWhiteSpace(pattern[ii]))
+						{
+							continue;
+						}
+
+						if (pattern[ii] != seg.GetElement(ii))
+						{
+							break;
+						}
+
+						if (ii == pattern.Length - 1)
+						{
+							return true;
+						}
+					}
+				}
+			}
+			return false;
+		}
 	}
 }

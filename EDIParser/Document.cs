@@ -56,16 +56,40 @@ namespace EDIParser
 
 			return false;
 		}
+		
+		/// <summary>
+		/// Checks is a segment exists with a given pattern. This is slower than looking for it in specific chunk
+		/// </summary>
+		/// <param name="type"></param>
+		/// <param name="pattern"></param>
+		/// <returns></returns>
+		public bool DoesSegExistFromPattern(string type, params string[] pattern)
+		{
+			foreach (var seg in _segments)
+			{
+				if (seg.type == type)
+				{
+					for (int ii = 0; ii < pattern.Length; ii++)
+					{
+						if (string.IsNullOrWhiteSpace(pattern[ii]))
+						{
+							continue;
+						}
 
-//		public bool DoesSegExistFromPattern(string type, params string[] pattern)
-//		{
-//			foreach (var segment in segments)
-//			{
-//				throw Exception NotImplementedException;
-//			}
-//
-//			return false;
-//		}
+						if (pattern[ii] != seg.GetElement(ii))
+						{
+							break;
+						}
+
+						if (ii == pattern.Length - 1)
+						{
+							return true;
+						}
+					}
+				}
+			}
+			return false;
+		}
 
 		/// <summary>
 		/// Returns the first instance of a given segment type, else an empty segment
