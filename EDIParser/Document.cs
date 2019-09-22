@@ -23,11 +23,33 @@ namespace EDIParser {
 		public List<SegmentGroup> deatils;
 		public SegmentGroup trailer;
 
+		/// <summary>
+		/// Generates the whole transaction
+		/// </summary>
+		/// <param name="segments"></param>
 		public Document(List<Segment> segments) {
 			this._segments = segments;
 			DocumentType = segments[0].type;
 			_ST = segments[0];
 			_SE = segments.Last();
+
+			GenerateToString();
+		}
+		
+		/// <summary>
+		/// This one will throw an error if the SE count is different
+		/// </summary>
+		/// <param name="segments"></param>
+		/// <param name="ThrowError"></param>
+		public Document(List<Segment> segments, bool ThrowError) {
+			this._segments = segments;
+			DocumentType = segments[0].type;
+			_ST = segments[0];
+			_SE = segments.Last();
+
+			if (ThrowError && _segments.Count != int.Parse(SEGetSECount())) {
+				throw new Exception("SE count and segment count do not match");
+			}
 
 			GenerateToString();
 		}

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -6,6 +7,7 @@ namespace EDIParser {
 		private Segment _GS;
 		private Segment _GE;
 		private string _toString = "";
+		private bool _throwError;
 
 		/// <summary>
 		/// The document type expressed as the GS type
@@ -14,9 +16,25 @@ namespace EDIParser {
 
 		private List<Document> _Docs = new List<Document>();
 
+		/// <summary>
+		/// Generates the envelope at first
+		/// </summary>
+		/// <param name="gs"></param>
 		public Envelope(Segment gs) {
 			_GS = gs;
 			type = _GS.GetElement(1);
+		}
+		
+		/// <summary>
+		/// Generates the envelope and can throw an error if the counts don't match
+		/// </summary>
+		/// <param name="gs"></param>
+		/// <param name="throwError"></param>
+		public Envelope(Segment gs, bool throwError) {
+			_GS = gs;
+			type = _GS.GetElement(1);
+
+			_throwError = throwError;
 		}
 
 		/// <summary>
@@ -57,7 +75,7 @@ namespace EDIParser {
 		}
 
 		public string GEDocumentCount() {
-			return Ge.GetElement(1);
+			return _GE.GetElement(1);
 		}
 
 		#endregion
@@ -82,6 +100,12 @@ namespace EDIParser {
 		/// <returns></returns>
 		public bool DoDocumentCountsMatch() {
 			return _Docs.Count == int.Parse(GEDocumentCount());
+		}
+
+		public void CheckError() {
+			if (_throwError && !DoDocumentCountsMatch()) {
+				throw new Exception("GE count and document count's do not match'");
+			}
 		}
 	}
 }

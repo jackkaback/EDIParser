@@ -42,7 +42,6 @@ namespace EDIParser {
 			if (_elements.Count > i) {
 				return _elements[i];
 			}
-
 			return string.Empty;
 		}
 
@@ -57,6 +56,18 @@ namespace EDIParser {
 		public IEnumerator<string> GetEnumerator() {
 			foreach (var e in _elements) {
 				yield return e;
+			}
+		}
+		
+		/// <summary>
+		/// This is the easier way but has no protection for out of bounds exceptions
+		/// </summary>
+		/// <param name="index"></param>
+		public string this[int index]
+		{
+			get
+			{
+				return _elements[index];
 			}
 		}
 	}

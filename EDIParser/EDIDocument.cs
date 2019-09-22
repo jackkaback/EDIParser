@@ -14,6 +14,10 @@ namespace EDIParser {
 
 		private Envelope _currentEnvlope;
 
+		/// <summary>
+		/// Generates the entire EDI document
+		/// </summary>
+		/// <param name="file"></param>
 		public EDIDocument(string file) {
 			_elementTerm = file[104];
 			_segTerminator = file[106];
@@ -52,6 +56,61 @@ namespace EDIParser {
 					_currentEnvlope.addDocument(new Document(_segments));
 					_segments = new List<Segment>();
 				}
+			}
+		}
+
+		/// <summary>
+		/// Generates the entire EDI document, and can throw an error if any piece of data doesn't match
+		/// </summary>
+		/// <param name="file"></param>
+		/// <param name="throwError"></param>
+		/// <exception cref="Exception"></exception>
+		public EDIDocument(string file, bool throwError) {
+			_elementTerm = file[104];
+			_segTerminator = file[106];
+			var lines = file.Split(_segTerminator);
+
+			foreach (var line in lines) {
+				Segment t = new Segment(line.Split(_elementTerm), _segTerminator, _elementTerm);
+
+				//Dealing with the special segments here
+				if (t.type == "ISA") {
+					_ISA = t;
+					continue;
+				}
+
+				if (t.type == "GS") {
+					_currentEnvlope = new Envelope(t, throwError);
+					continue;
+				}
+
+				if (t.type == "GE") {
+					_currentEnvlope.Ge = t;
+					_currentEnvlope.GenerateToString();
+					_currentEnvlope.CheckError();
+					_envelopes.Add(_currentEnvlope);
+					continue;
+				}
+
+				if (t.type == "IEA") {
+					_IEA = t;
+					if (throwError && !DoEnvelopeCountsMatch()) {
+						throw new Exception("IEA count and count of envelopes do not match");
+					}
+					GenerateToString();
+					continue;
+				}
+
+				_segments.Add(t);
+
+				if (t.type == "SE") {
+					_currentEnvlope.addDocument(new Document(_segments, throwError));
+					_segments = new List<Segment>();
+				}
+			}
+
+			if (throwError && _envelopes.Count != int.Parse(IEAEnvelopeCount())) {
+				throw new Exception("Envelope count does not equal the IEA count");
 			}
 		}
 
