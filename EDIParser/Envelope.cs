@@ -61,6 +61,11 @@ namespace EDIParser
 
 		#region Special GS/GE information
 
+		public string GSGetEnvelopeID()
+		{
+			return _GS.GetElement(6);
+		}
+		
 		public string GEDocumentCount()
 		{
 			return Ge.GetElement(1);

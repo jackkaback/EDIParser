@@ -316,6 +316,11 @@ namespace EDIParser
 
 		#region Special ST/SE information
 
+		public string STGetID()
+		{
+			return _ST.GetElement(2);
+		}
+		
 		public string SEGetSECount()
 		{
 			return _SE.GetElement(1);
