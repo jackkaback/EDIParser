@@ -19,9 +19,9 @@ namespace EDIParser {
 //		private List<List<Segment>> _details;
 		private string _detailStart;
 
-		public SegmentGroup header;
-		public List<SegmentGroup> deatils;
-		public SegmentGroup trailer;
+		public SegmentGroup header = new SegmentGroup();
+		public List<SegmentGroup> deatils = new List<SegmentGroup>();
+		public SegmentGroup trailer = new SegmentGroup();
 
 		/// <summary>
 		/// Generates the whole transaction
