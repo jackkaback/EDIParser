@@ -2,10 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 
-namespace EDIParser
-{
-	public class EDIDocument
-	{
+namespace EDIParser {
+	public class EDIDocument {
 		private Segment _ISA;
 		private Segment _IEA;
 		private char _elementTerm;
@@ -16,39 +14,33 @@ namespace EDIParser
 
 		private Envelope _currentEnvlope;
 
-		public EDIDocument(string file)
-		{
+		public EDIDocument(string file) {
 			_elementTerm = file[104];
 			_segTerminator = file[106];
 			var lines = file.Split(_segTerminator);
 
-			foreach (var line in lines)
-			{
+			foreach (var line in lines) {
 				Segment t = new Segment(line.Split(_elementTerm), _segTerminator, _elementTerm);
 
 				//Dealing with the special segments here
-				if (t.type == "ISA")
-				{
+				if (t.type == "ISA") {
 					_ISA = t;
 					continue;
 				}
 
-				if (t.type == "GS")
-				{
+				if (t.type == "GS") {
 					_currentEnvlope = new Envelope(t);
 					continue;
 				}
 
-				if (t.type == "GE")
-				{
+				if (t.type == "GE") {
 					_currentEnvlope.Ge = t;
 					_currentEnvlope.GenerateToString();
 					_envelopes.Add(_currentEnvlope);
 					continue;
 				}
 
-				if (t.type == "IEA")
-				{
+				if (t.type == "IEA") {
 					_IEA = t;
 					GenerateToString();
 					continue;
@@ -56,16 +48,14 @@ namespace EDIParser
 
 				_segments.Add(t);
 
-				if (t.type == "SE")
-				{
+				if (t.type == "SE") {
 					_currentEnvlope.addDocument(new Document(_segments));
 					_segments = new List<Segment>();
 				}
 			}
 		}
 
-		public List<Envelope> GetEnvelopes()
-		{
+		public List<Envelope> GetEnvelopes() {
 			return _envelopes;
 		}
 
@@ -74,13 +64,10 @@ namespace EDIParser
 		/// </summary>
 		/// <param name="type"></param>
 		/// <returns></returns>
-		public Envelope GetEnvelopeOfType(string type)
-		{
+		public Envelope GetEnvelopeOfType(string type) {
 			type = type.ToUpper();
-			foreach (var e in _envelopes)
-			{
-				if (e.type == type)
-				{
+			foreach (var e in _envelopes) {
+				if (e.type == type) {
 					return e;
 				}
 			}
@@ -93,13 +80,10 @@ namespace EDIParser
 		/// </summary>
 		/// <param name="type"></param>
 		/// <returns></returns>
-		public bool DoesEnvelopeExist(string type)
-		{
+		public bool DoesEnvelopeExist(string type) {
 			type = type.ToUpper();
-			foreach (var e in _envelopes)
-			{
-				if (e.type == type)
-				{
+			foreach (var e in _envelopes) {
+				if (e.type == type) {
 					return true;
 				}
 			}
@@ -112,13 +96,10 @@ namespace EDIParser
 		/// </summary>
 		/// <param name="type"></param>
 		/// <returns></returns>
-		public Envelope GetRequiredEnvelope(string type)
-		{
+		public Envelope GetRequiredEnvelope(string type) {
 			type = type.ToUpper();
-			foreach (var e in _envelopes)
-			{
-				if (e.type == type)
-				{
+			foreach (var e in _envelopes) {
+				if (e.type == type) {
 					return e;
 				}
 			}
@@ -128,88 +109,71 @@ namespace EDIParser
 
 		#region ISA Information
 
-		public string ISAAuthorizationQlf()
-		{
+		public string ISAAuthorizationQlf() {
 			return _ISA.GetElement(1).Trim();
 		}
 
-		public string ISAAuthorizationInfo()
-		{
+		public string ISAAuthorizationInfo() {
 			return _ISA.GetElement(2).Trim();
 		}
 
-		public string ISASecurityQlf()
-		{
+		public string ISASecurityQlf() {
 			return _ISA.GetElement(3).Trim();
 		}
 
-		public string ISASecurityInfo()
-		{
+		public string ISASecurityInfo() {
 			return _ISA.GetElement(4).Trim();
 		}
 
-		public string ISASenderQlf()
-		{
+		public string ISASenderQlf() {
 			return _ISA.GetElement(5).Trim();
 		}
 
-		public string ISASenderID()
-		{
+		public string ISASenderID() {
 			return _ISA.GetElement(6).Trim();
 		}
 
-		public string ISARecieverQlf()
-		{
+		public string ISARecieverQlf() {
 			return _ISA.GetElement(7).Trim();
 		}
 
-		public string ISARecieverID()
-		{
+		public string ISARecieverID() {
 			return _ISA.GetElement(8).Trim();
 		}
 
-		public string ISADate()
-		{
+		public string ISADate() {
 			return _ISA.GetElement(9).Trim();
 		}
 
-		public string ISATime()
-		{
+		public string ISATime() {
 			return _ISA.GetElement(10).Trim();
 		}
 
-		public string ISAControlStanders()
-		{
+		public string ISAControlStanders() {
 			return _ISA.GetElement(11).Trim();
 		}
 
-		public string ISAControlVersion()
-		{
+		public string ISAControlVersion() {
 			return _ISA.GetElement(12).Trim();
 		}
 
-		public string ISAControlNumber()
-		{
+		public string ISAControlNumber() {
 			return _ISA.GetElement(13).Trim();
 		}
 
-		public string ISAAcknowledgementRequested()
-		{
+		public string ISAAcknowledgementRequested() {
 			return _ISA.GetElement(14).Trim();
 		}
 
-		public string ISATestProductionIndictor()
-		{
+		public string ISATestProductionIndictor() {
 			return _ISA.GetElement(15).Trim();
 		}
 
-		public string subElementSeperator()
-		{
+		public string subElementSeperator() {
 			return _ISA.GetElement(16).Trim();
 		}
 
-		public string IEAEnvelopeCount()
-		{
+		public string IEAEnvelopeCount() {
 			return _IEA.GetElement(1);
 		}
 
@@ -219,16 +183,13 @@ namespace EDIParser
 		/// Makes the envelopes in the ansi document Enumerable
 		/// </summary>
 		/// <returns></returns>
-		public IEnumerator<Envelope> GetEnumerator()
-		{
-			foreach (var envelope in _envelopes)
-			{
+		public IEnumerator<Envelope> GetEnumerator() {
+			foreach (var envelope in _envelopes) {
 				yield return envelope;
 			}
 		}
 
-		public int EnvelopeCount()
-		{
+		public int EnvelopeCount() {
 			return _envelopes.Count;
 		}
 
@@ -236,28 +197,24 @@ namespace EDIParser
 		/// Says if the IEA count is the same as the actual number of envelops in the whole documents
 		/// </summary>
 		/// <returns></returns>
-		public bool DoEnvelopeCountsMatch()
-		{
+		public bool DoEnvelopeCountsMatch() {
 			return _envelopes.Count == int.Parse(IEAEnvelopeCount());
 		}
 
 		public Segment Isa => _ISA;
 		public Segment Iea => _IEA;
 
-		private void GenerateToString()
-		{
+		private void GenerateToString() {
 			_toString = _ISA + "\r\n";
 
-			foreach (var e in _envelopes)
-			{
+			foreach (var e in _envelopes) {
 				_toString += e.ToString();
 			}
 
 			_toString += _IEA + "\r\n";
 		}
 
-		public override string ToString()
-		{
+		public override string ToString() {
 			return _toString;
 		}
 	}
