@@ -63,7 +63,7 @@ namespace EDIParser
 			return string.Join(_elementTerm, _elements) + _segterminator;
 		}
 		
-		public IEnumerable<string> GetEnumerable() {
+		public IEnumerator<string> GetEnumerator() {
 			foreach (var e in _elements)
 			{
 				yield return e;
