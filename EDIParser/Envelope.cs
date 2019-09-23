@@ -61,11 +61,26 @@ namespace EDIParser {
 		/// <summary>
 		/// Makes the document in the envelope Enumerable
 		/// </summary>
-		/// <returns></returns>
+		/// <returns>Enumerated Documents</returns>
 		public IEnumerator<Document> GetEnumerator() {
 			foreach (var doc in _Docs) {
 				yield return doc;
 			}
+		}
+		
+		/// <summary>
+		/// get's the document at position index
+		/// </summary>
+		/// <param name="index"></param>
+		public Document this[int index] {
+			get => _Docs[index];
+		}
+
+		/// <summary>
+		/// For doing for loops rather than foreach
+		/// </summary>
+		public int Length() {
+			return _Docs.Count;
 		}
 
 		#region Special GS/GE information

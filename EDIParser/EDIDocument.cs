@@ -248,6 +248,22 @@ namespace EDIParser {
 			}
 		}
 
+		/// <summary>
+		/// get's the Envelope at the indexed position
+		/// </summary>
+		/// <param name="index"></param>
+		public Envelope this[int index] {
+			get => _envelopes[index];
+		}
+
+		/// <summary>
+		/// For doing for loops rather than foreach, same as envelope count, but more convention name
+		/// </summary>
+		/// <returns></returns>
+		public int Length() {
+			return _envelopes.Count;
+		}
+
 		public int EnvelopeCount() {
 			return _envelopes.Count;
 		}

@@ -48,11 +48,14 @@ namespace EDIParser {
 		/// <summary>
 		/// This shouldn't be used to write the data out, bt rather for debugging or to write to console
 		/// </summary>
-		/// <returns></returns>
 		public override string ToString() {
 			return string.Join(_elementTerm, _elements) + _segterminator;
 		}
 
+		/// <summary>
+		/// Makes the segment enumerable
+		/// </summary>
+		/// <returns>An Enumerated string</returns>
 		public IEnumerator<string> GetEnumerator() {
 			foreach (var e in _elements) {
 				yield return e;
@@ -60,15 +63,12 @@ namespace EDIParser {
 		}
 		
 		/// <summary>
-		/// This is the easier way but has no protection for out of bounds exceptions
+		/// This is the easier way to get an element
 		/// </summary>
 		/// <param name="index"></param>
 		public string this[int index]
 		{
-			get
-			{
-				return _elements[index];
-			}
+			get => GetElement(index);
 		}
 	}
 }

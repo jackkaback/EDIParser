@@ -10,17 +10,40 @@ namespace EDIParser {
 		/// </summary>
 		public readonly string DocumentType;
 
+		/// <summary>
+		/// Special ST segement
+		/// </summary>
 		private Segment _ST;
+		
+		/// <summary>
+		/// special SE segement
+		/// </summary>
 		private Segment _SE;
+		
+		/// <summary>
+		/// The string from this document
+		/// </summary>
 		private string _toString;
 
+		/// <summary>
+		/// List of all segements
+		/// </summary>
 		private List<Segment> _segments;
-
-//		private List<List<Segment>> _details;
 		private string _detailStart;
 
+		/// <summary>
+		/// Every segment in the header
+		/// </summary>
 		public SegmentGroup header = new SegmentGroup();
+
+		/// <summary>
+		/// A list of every item level loop
+		/// </summary>
 		public List<SegmentGroup> deatils = new List<SegmentGroup>();
+		
+		/// <summary>
+		/// Everything in the trailer
+		/// </summary>
 		public SegmentGroup trailer = new SegmentGroup();
 
 		/// <summary>
@@ -376,7 +399,7 @@ namespace EDIParser {
 		/// <summary>
 		/// Makes the segments in the document Enumerable
 		/// </summary>
-		/// <returns></returns>
+		/// <returns>Enumerated Segements</returns>
 		public IEnumerator<Segment> GetEnumerator() {
 			foreach (var segment in _segments) {
 				yield return segment;
