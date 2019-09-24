@@ -117,6 +117,10 @@ namespace EDIParser {
 			return _Docs.Count == int.Parse(GEDocumentCount());
 		}
 
+		/// <summary>
+		/// Throws an error if the throw flag is set and document counts don't match
+		/// </summary>
+		/// <exception cref="Exception"></exception>
 		public void CheckError() {
 			if (_throwError && !DoDocumentCountsMatch()) {
 				throw new Exception("GE count and document count's do not match'");

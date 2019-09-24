@@ -278,7 +278,7 @@ namespace EDIParser {
 		private List<Segment> DoN1FromHeader(string qualifier) {
 			List<Segment> n1Loop = new List<Segment>();
 
-			string[] types = new[] {"N2", "N3", "N4"};
+			string[] types = {"N2", "N3", "N4"};
 
 			bool inLoop = false;
 
@@ -308,7 +308,7 @@ namespace EDIParser {
 		private List<Segment> DoN1FromDocument(string qualifier) {
 			List<Segment> n1Loop = new List<Segment>();
 
-			string[] types = new[] {"N2", "N3", "N4"};
+			string[] types = {"N2", "N3", "N4"};
 
 			bool inLoop = false;
 
@@ -328,6 +328,32 @@ namespace EDIParser {
 			}
 
 			return n1Loop;
+		}
+
+		/// <summary>
+		/// Grabs every N1-N4 loop
+		/// </summary>
+		/// <returns></returns>
+		public List<SegmentGroup> GetAllN1Loops() {
+			List<SegmentGroup> retVal = new List<SegmentGroup>();
+
+			if (header != new SegmentGroup()) {
+				retVal = header.GetAllN1Loops();
+			}
+			else {
+				string[] types = {"N1", "N2", "N3", "N4"};
+				foreach (var segment in _segments) {
+					if (types.Contains(segment.type)) {
+						if (segment.type == "N1") {
+							retVal.Add(new SegmentGroup());
+						}
+						
+						retVal.Last().add(segment);
+					}
+				}
+			}
+
+			return retVal;
 		}
 
 		/// <summary>
@@ -368,7 +394,7 @@ namespace EDIParser {
 		public List<Segment> getN1LoopOfType(string qualifier, string[] additionFields) {
 			List<Segment> n1Loop = new List<Segment>();
 
-			string[] types = new[] {"N2", "N3", "N4"};
+			string[] types = {"N2", "N3", "N4"};
 
 			qualifier = qualifier.ToUpper();
 
@@ -391,6 +417,41 @@ namespace EDIParser {
 				}
 			}
 
+			return n1Loop;
+		}
+
+		/// <summary>
+		/// Same as get n1 loop, but as a segment group
+		/// </summary>
+		/// <param name="qualifier"></param>
+		/// <param name="additionFields"></param>
+		/// <returns></returns>
+		public SegmentGroup getN1LoopOfTypeSegmentGroup(string qualifier, string[] additionFields) {
+			SegmentGroup n1Loop = new SegmentGroup();
+
+			var n1s = getN1LoopOfType(qualifier, additionFields);
+
+			foreach (var n1 in n1s) {
+				n1Loop.add(n1);
+			}
+			
+			return n1Loop;
+		}
+		
+		/// <summary>
+		/// Returns a segment group
+		/// </summary>
+		/// <param name="qualifier"></param>
+		/// <returns></returns>
+		public SegmentGroup getN1LoopOfTypeSegmentGroup(string qualifier) {
+			SegmentGroup n1Loop = new SegmentGroup();
+			
+			var n1s = getN1LoopOfType(qualifier);
+
+			foreach (var n1 in n1s) {
+				n1Loop.add(n1);
+			}
+			
 			return n1Loop;
 		}
 

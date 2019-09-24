@@ -1,4 +1,7 @@
+using System.Collections;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace EDIParser {
 	public class SegmentGroup {
@@ -79,5 +82,62 @@ namespace EDIParser {
 
 			return false;
 		}
+		
+		/// <summary>
+		/// Get's the N1, N2, N3, N4 and addition fields of a given loop
+		/// </summary>
+		/// <param name="qualifier"></param>
+		/// <param name="additionFields"></param>
+		/// <returns></returns>
+		public List<Segment> getN1LoopOfType(string qualifier, string[] additionFields) {
+			List<Segment> n1Loop = new List<Segment>();
+
+			string[] types = {"N2", "N3", "N4"};
+
+			qualifier = qualifier.ToUpper();
+
+			bool inLoop = false;
+
+			foreach (var s in _segments) {
+				if (s.type == "N1" && s.GetElement(1) == qualifier) {
+					n1Loop.Add(s);
+					inLoop = true;
+					continue;
+				}
+
+				//You've gone to far
+				if (s.type == "N1" && inLoop) {
+					break;
+				}
+
+				if (inLoop && (types.Contains(s.type) || additionFields.Contains(s.type))) {
+					n1Loop.Add(s);
+				}
+			}
+
+			return n1Loop;
+		}
+
+		/// <summary>
+		/// Grabs every N1-N4 loop
+		/// </summary>
+		/// <returns></returns>
+		public List<SegmentGroup> GetAllN1Loops() {
+			List<SegmentGroup> retVal = new List<SegmentGroup>();
+
+			string[] types = {"N1", "N2", "N3", "N4"};
+			foreach (var segment in _segments) {
+				if (types.Contains(segment.type)) {
+					if (segment.type == "N1") {
+						retVal.Add(new SegmentGroup());
+					}
+						
+					retVal.Last().add(segment);
+				}
+			}
+
+			return retVal;
+		}
+		
 	}
 }

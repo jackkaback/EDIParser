@@ -46,7 +46,7 @@ namespace EDIParser {
 		}
 
 		/// <summary>
-		/// This shouldn't be used to write the data out, bt rather for debugging or to write to console
+		/// This shouldn't be used to write the data out, but rather for debugging or to write to console
 		/// </summary>
 		public override string ToString() {
 			return string.Join(_elementTerm, _elements) + _segterminator;
