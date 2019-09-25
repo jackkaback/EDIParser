@@ -139,5 +139,20 @@ namespace EDIParser {
 			return retVal;
 		}
 		
+		/// <summary>
+		/// This is the easier way to get an element
+		/// </summary>
+		/// <param name="index"></param>
+		public Segment this[int index]
+		{
+			get => GetElement(index);
+		}
+
+		public Segment GetElement(int index) {
+			if (_segments.Count >= index) {
+				return _segments[index];
+			}
+			return new Segment();
+		}
 	}
 }

@@ -45,6 +45,8 @@ namespace EDIParser {
 		/// Everything in the trailer
 		/// </summary>
 		public SegmentGroup trailer = new SegmentGroup();
+		
+		public H1Loop h1Loop;
 
 		/// <summary>
 		/// Generates the whole transaction
@@ -57,6 +59,19 @@ namespace EDIParser {
 			_SE = segments.Last();
 
 			GenerateToString();
+			if (_ST[1] == "856") {
+				var temp = segments;
+
+				foreach (var segment in temp) {
+					if (segment.type != "H1") {
+						header.add(segment);
+						temp.Remove(segment);
+						continue;
+					}
+					h1Loop = new H1Loop(temp);
+					break;
+				}
+			}
 		}
 		
 		/// <summary>
