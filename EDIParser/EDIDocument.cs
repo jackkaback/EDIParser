@@ -97,6 +97,7 @@ namespace EDIParser {
 					if (throwError && !DoEnvelopeCountsMatch()) {
 						throw new Exception("IEA count and count of envelopes do not match");
 					}
+
 					GenerateToString();
 					continue;
 				}
@@ -119,7 +120,7 @@ namespace EDIParser {
 		}
 
 		/// <summary>
-		/// Get's the first instance of an envelope or returns an empty envelope
+		/// Gets the first instance of an envelope or returns an empty envelope
 		/// </summary>
 		/// <param name="type"></param>
 		/// <returns></returns>
@@ -151,7 +152,7 @@ namespace EDIParser {
 		}
 
 		/// <summary>
-		/// Get's the first instance of an envelope, or throws an error
+		/// Gets the first instance of an envelope, or throws an error
 		/// </summary>
 		/// <param name="type"></param>
 		/// <returns></returns>
@@ -249,7 +250,7 @@ namespace EDIParser {
 		}
 
 		/// <summary>
-		/// get's the Envelope at the indexed position
+		/// gets the Envelope at the indexed position
 		/// </summary>
 		/// <param name="index"></param>
 		public Envelope this[int index] {

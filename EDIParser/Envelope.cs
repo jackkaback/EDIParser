@@ -24,7 +24,7 @@ namespace EDIParser {
 			_GS = gs;
 			type = _GS.GetElement(1);
 		}
-		
+
 		/// <summary>
 		/// Generates the envelope and can throw an error if the counts don't match
 		/// </summary>
@@ -67,9 +67,9 @@ namespace EDIParser {
 				yield return doc;
 			}
 		}
-		
+
 		/// <summary>
-		/// get's the document at position index
+		/// gets the document at position index
 		/// </summary>
 		/// <param name="index"></param>
 		public Document this[int index] {

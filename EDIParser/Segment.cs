@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Globalization;
 
 namespace EDIParser {
 	public class Segment {
@@ -34,7 +35,7 @@ namespace EDIParser {
 		}
 
 		/// <summary>
-		/// Get's the value of the element at I if it exists
+		/// Gets the value of the element at I if it exists
 		/// </summary>
 		/// <param name="i"></param>
 		/// <returns>The I'th element or an empty string'</returns>
@@ -42,6 +43,7 @@ namespace EDIParser {
 			if (_elements.Count > i) {
 				return _elements[i];
 			}
+
 			return string.Empty;
 		}
 
@@ -61,14 +63,60 @@ namespace EDIParser {
 				yield return e;
 			}
 		}
-		
+
 		/// <summary>
 		/// This is the easier way to get an element
 		/// </summary>
 		/// <param name="index"></param>
-		public string this[int index]
-		{
+		public string this[int index] {
 			get => GetElement(index);
+		}
+
+		/// <summary>
+		/// Used to tell if a segment contains a specific string
+		/// </summary>
+		/// <param name="value"></param>
+		/// <returns></returns>
+		public bool SegContains(string value) {
+			foreach (var e in _elements) {
+				if (CultureInfo.InvariantCulture.CompareInfo.IndexOf(e, value, CompareOptions.IgnoreCase) >= 0) {
+					return true;
+				}
+			}
+
+			return false;
+		}
+
+		/// <summary>
+		/// Finds the first instance where the value exists
+		/// </summary>
+		/// <param name="value"></param>
+		/// <returns>index of found value, -1 if it doesn't exist'</returns>
+		public int SegContainsAtAddress(string value) {
+			foreach (var e in _elements) {
+				if (CultureInfo.InvariantCulture.CompareInfo.IndexOf(e, value, CompareOptions.IgnoreCase) >= 0) {
+					return _elements.IndexOf(e);
+				}
+			}
+
+			return -1;
+		}
+
+		/// <summary>
+		/// Finds all instances of where the data exists and returns a list of their indexes
+		/// </summary>
+		/// <param name="value"></param>
+		/// <returns></returns>
+		public int[] SegContainsAtAddresses(string value) {
+			List<int> retVals = new List<int>();
+
+			foreach (var e in _elements) {
+				if (CultureInfo.InvariantCulture.CompareInfo.IndexOf(e, value, CompareOptions.IgnoreCase) >= 0) {
+					retVals.Add(_elements.IndexOf(e));
+				}
+			}
+
+			return retVals.ToArray();
 		}
 	}
 }

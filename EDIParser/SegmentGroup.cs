@@ -54,6 +54,53 @@ namespace EDIParser {
 
 			return new Segment();
 		}
+		
+		/// <summary>
+		/// Returns all Segment with a given pattern
+		/// </summary>
+		/// <param name="type"></param>
+		/// <param name="pattern"></param>
+		/// <returns></returns>
+		public List<Segment> GetAllSegmentsWithPattern(string type, params string[] pattern) {
+			List<Segment> retvals = new List<Segment>();
+			
+			foreach (var seg in _segments) {
+				if (seg.type == type) {
+					for (int ii = 0; ii < pattern.Length; ii++) {
+						if (string.IsNullOrWhiteSpace(pattern[ii])) {
+							continue;
+						}
+
+						if (pattern[ii] != seg.GetElement(ii)) {
+							break;
+						}
+
+						if (ii == pattern.Length - 1) {
+							retvals.Add(seg);
+						}
+					}
+				}
+			}
+
+			return retvals;
+		}
+
+		/// <summary>
+		/// Gets all instances where a segment contains a value
+		/// </summary>
+		/// <param name="value"></param>
+		/// <returns></returns>
+		public List<Segment> GetAllSegmentsContaining(string value) {
+			List<Segment> retval = new List<Segment>();
+			
+			foreach (var segment in _segments) {
+				if (segment.SegContains(value)) {
+					retval.Add(segment);
+				}
+			}
+
+			return retval;
+		}
 
 		/// <summary>
 		/// Checks is a segment exists with a given pattern
@@ -82,9 +129,9 @@ namespace EDIParser {
 
 			return false;
 		}
-		
+
 		/// <summary>
-		/// Get's the N1, N2, N3, N4 and addition fields of a given loop
+		/// Gets the N1, N2, N3, N4 and addition fields of a given loop
 		/// </summary>
 		/// <param name="qualifier"></param>
 		/// <param name="additionFields"></param>
@@ -131,20 +178,19 @@ namespace EDIParser {
 					if (segment.type == "N1") {
 						retVal.Add(new SegmentGroup());
 					}
-						
+
 					retVal.Last().add(segment);
 				}
 			}
 
 			return retVal;
 		}
-		
+
 		/// <summary>
 		/// This is the easier way to get an element
 		/// </summary>
 		/// <param name="index"></param>
-		public Segment this[int index]
-		{
+		public Segment this[int index] {
 			get => GetElement(index);
 		}
 
@@ -152,6 +198,7 @@ namespace EDIParser {
 			if (_segments.Count >= index) {
 				return _segments[index];
 			}
+
 			return new Segment();
 		}
 	}

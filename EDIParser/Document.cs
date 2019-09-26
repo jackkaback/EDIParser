@@ -14,12 +14,12 @@ namespace EDIParser {
 		/// Special ST segement
 		/// </summary>
 		private Segment _ST;
-		
+
 		/// <summary>
 		/// special SE segement
 		/// </summary>
 		private Segment _SE;
-		
+
 		/// <summary>
 		/// The string from this document
 		/// </summary>
@@ -29,6 +29,7 @@ namespace EDIParser {
 		/// List of all segements
 		/// </summary>
 		private List<Segment> _segments;
+
 		private string _detailStart;
 
 		/// <summary>
@@ -40,12 +41,12 @@ namespace EDIParser {
 		/// A list of every item level loop
 		/// </summary>
 		public List<SegmentGroup> deatils = new List<SegmentGroup>();
-		
+
 		/// <summary>
 		/// Everything in the trailer
 		/// </summary>
 		public SegmentGroup trailer = new SegmentGroup();
-		
+
 		public H1Loop h1Loop;
 
 		/// <summary>
@@ -68,12 +69,13 @@ namespace EDIParser {
 						temp.Remove(segment);
 						continue;
 					}
+
 					h1Loop = new H1Loop(temp);
 					break;
 				}
 			}
 		}
-		
+
 		/// <summary>
 		/// This one will throw an error if the SE count is different
 		/// </summary>
@@ -171,7 +173,7 @@ namespace EDIParser {
 		}
 
 		/// <summary>
-		/// Get's all the segments of a specified type'
+		/// Gets all the segments of a specified type'
 		/// </summary>
 		/// <param name="type"></param>
 		/// <returns>A list of segments</returns>
@@ -240,7 +242,7 @@ namespace EDIParser {
 		}
 
 		/// <summary>
-		/// Get's the entirety of the N1 Loop
+		/// Gets the entirety of the N1 Loop
 		/// </summary>
 		/// <param name="qualifier"></param>
 		/// <returns></returns>
@@ -271,7 +273,7 @@ namespace EDIParser {
 		}
 
 		/// <summary>
-		/// Get's the N1, N2, N3, and N4 of a given loop
+		/// Gets the N1, N2, N3, and N4 of a given loop
 		/// </summary>
 		/// <param name="qualifier"></param>
 		/// <returns></returns>
@@ -362,7 +364,7 @@ namespace EDIParser {
 						if (segment.type == "N1") {
 							retVal.Add(new SegmentGroup());
 						}
-						
+
 						retVal.Last().add(segment);
 					}
 				}
@@ -401,7 +403,7 @@ namespace EDIParser {
 		}
 
 		/// <summary>
-		/// Get's the N1, N2, N3, N4 and addition fields of a given loop
+		/// Gets the N1, N2, N3, N4 and addition fields of a given loop
 		/// </summary>
 		/// <param name="qualifier"></param>
 		/// <param name="additionFields"></param>
@@ -449,10 +451,10 @@ namespace EDIParser {
 			foreach (var n1 in n1s) {
 				n1Loop.add(n1);
 			}
-			
+
 			return n1Loop;
 		}
-		
+
 		/// <summary>
 		/// Returns a segment group
 		/// </summary>
@@ -460,13 +462,13 @@ namespace EDIParser {
 		/// <returns></returns>
 		public SegmentGroup getN1LoopOfTypeSegmentGroup(string qualifier) {
 			SegmentGroup n1Loop = new SegmentGroup();
-			
+
 			var n1s = getN1LoopOfType(qualifier);
 
 			foreach (var n1 in n1s) {
 				n1Loop.add(n1);
 			}
-			
+
 			return n1Loop;
 		}
 
