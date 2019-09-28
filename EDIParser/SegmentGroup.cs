@@ -239,5 +239,21 @@ namespace EDIParser {
 
 			return new Segment();
 		}
+
+		/// <summary>
+		/// Grabs every message segment in the segment group
+		/// </summary>
+		/// <returns></returns>
+		public List<Segment> GetAllMessageSegments() {
+			string[] types = {"N9", "MTX", "MSG"};
+			List<Segment> retval = new List<Segment>();
+			foreach (var segment in _segments) {
+				if (types.Contains(segment.type)) {
+					retval.Add(segment);
+				}
+			}
+
+			return retval;
+		}
 	}
 }

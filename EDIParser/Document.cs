@@ -214,10 +214,55 @@ namespace EDIParser {
 				}
 
 				switch (position) {
+					//Header is everything between the ST and the first line item
 					case 0:
 						header.add(segment);
 						break;
 					case 1:
+						//Starts a new line item every time the line item segment is hit
+						if (segment.type == itemLevelType) {
+							deatils.Add(new SegmentGroup());
+						}
+
+						deatils.Last().add(segment);
+						break;
+					case 2:
+						trailer.add(segment);
+						break;
+				}
+			}
+		}
+		
+		/// <summary>
+		/// Same as the other but if the start of the trailer isn't consistent
+		/// </summary>
+		/// <param name="itemLevelType"></param>
+		/// <param name="trailerTypes"></param>s
+		public void DefineSegmentGroups(string itemLevelType, string[] trailerTypes) {
+			//0 header, 1 item, 2 trailer 
+			int position = 0;
+			_detailStart = itemLevelType;
+
+			foreach (var segment in _segments) {
+				if (segment.type == "ST" || segment.type == "SE") {
+					continue;
+				}
+
+				if (position == 0 && segment.type == itemLevelType) {
+					position = 1;
+				}
+
+				if (position == 1 && trailerTypes.Contains(segment.type)) {
+					position = 2;
+				}
+
+				switch (position) {
+					//Header is everything between the ST and the first line item
+					case 0:
+						header.add(segment);
+						break;
+					case 1:
+						//Starts a new line item every time the line item segment is hit
 						if (segment.type == itemLevelType) {
 							deatils.Add(new SegmentGroup());
 						}
