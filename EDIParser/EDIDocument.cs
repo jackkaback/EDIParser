@@ -6,8 +6,6 @@ namespace EDIParser {
 	public class EDIDocument {
 		private Segment _ISA;
 		private Segment _IEA;
-		private char _elementTerm;
-		private char _segTerminator;
 		private string _toString = "";
 		private List<Envelope> _envelopes = new List<Envelope>();
 		private List<Segment> _segments = new List<Segment>();
@@ -19,12 +17,12 @@ namespace EDIParser {
 		/// </summary>
 		/// <param name="file"></param>
 		public EDIDocument(string file) {
-			_elementTerm = file[104];
-			_segTerminator = file[106];
-			var lines = file.Split(_segTerminator);
+			var elementTerm = file[104];
+			var segTerminator = file[106];
+			var lines = file.Split(segTerminator);
 
 			foreach (var line in lines) {
-				Segment t = new Segment(line.Split(_elementTerm), _segTerminator, _elementTerm);
+				Segment t = new Segment(line.Split(elementTerm), segTerminator, elementTerm);
 
 				//Dealing with the special segments here
 				if (t.type == "ISA") {
@@ -66,12 +64,12 @@ namespace EDIParser {
 		/// <param name="throwError"></param>
 		/// <exception cref="Exception"></exception>
 		public EDIDocument(string file, bool throwError) {
-			_elementTerm = file[104];
-			_segTerminator = file[106];
-			var lines = file.Split(_segTerminator);
+			var elementTerm = file[104];
+			var segTerminator = file[106];
+			var lines = file.Split(segTerminator);
 
 			foreach (var line in lines) {
-				Segment t = new Segment(line.Split(_elementTerm), _segTerminator, _elementTerm);
+				Segment t = new Segment(line.Split(elementTerm), segTerminator, elementTerm);
 
 				//Dealing with the special segments here
 				if (t.type == "ISA") {

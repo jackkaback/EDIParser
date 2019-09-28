@@ -101,6 +101,44 @@ namespace EDIParser {
 
 			return retval;
 		}
+		
+		/// <summary>
+		/// Gets all instances where a segment contains a value and segment is of type
+		/// </summary>
+		/// <param name="value"></param>
+		/// <returns></returns>
+		public List<Segment> GetAllSegmentsContainingOfType(string type, string value) {
+			List<Segment> retval = new List<Segment>();
+			
+			foreach (var segment in _segments) {
+				if (segment.type != type) {
+					continue;
+				}
+				if (segment.SegContains(value)) {
+					retval.Add(segment);
+				}
+			}
+			return retval;
+		}
+		
+		/// <summary>
+		/// Gets all instances where a segment contains a value and the segment is not of a type
+		/// </summary>
+		/// <param name="value"></param>
+		/// <returns></returns>
+		public List<Segment> GetAllSegmentsContainingNotOfType(string type, string value) {
+			List<Segment> retval = new List<Segment>();
+			
+			foreach (var segment in _segments) {
+				if (segment.type == type) {
+					continue;
+				}
+				if (segment.SegContains(value)) {
+					retval.Add(segment);
+				}
+			}
+			return retval;
+		}
 
 		/// <summary>
 		/// Checks is a segment exists with a given pattern

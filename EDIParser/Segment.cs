@@ -38,7 +38,7 @@ namespace EDIParser {
 		/// Gets the value of the element at I if it exists
 		/// </summary>
 		/// <param name="i"></param>
-		/// <returns>The I'th element or an empty string'</returns>
+		/// <returns>The I'th element or an empty string</returns>
 		public string GetElement(int i) {
 			if (_elements.Count > i) {
 				return _elements[i];
@@ -94,6 +94,10 @@ namespace EDIParser {
 		/// <returns>index of found value, -1 if it doesn't exist'</returns>
 		public int SegContainsAtAddress(string value) {
 			foreach (var e in _elements) {
+				if (_elements.IndexOf(e) == 0) {
+					continue;
+				}
+				
 				if (CultureInfo.InvariantCulture.CompareInfo.IndexOf(e, value, CompareOptions.IgnoreCase) >= 0) {
 					return _elements.IndexOf(e);
 				}
@@ -111,6 +115,10 @@ namespace EDIParser {
 			List<int> retVals = new List<int>();
 
 			foreach (var e in _elements) {
+				if (_elements.IndexOf(e) == 0) {
+					continue;
+				}
+				
 				if (CultureInfo.InvariantCulture.CompareInfo.IndexOf(e, value, CompareOptions.IgnoreCase) >= 0) {
 					retVals.Add(_elements.IndexOf(e));
 				}
