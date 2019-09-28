@@ -105,6 +105,7 @@ namespace EDIParser {
 		/// <summary>
 		/// Gets all instances where a segment contains a value and segment is of type
 		/// </summary>
+		/// <param name="type"></param>
 		/// <param name="value"></param>
 		/// <returns></returns>
 		public List<Segment> GetAllSegmentsContainingOfType(string type, string value) {
@@ -115,6 +116,47 @@ namespace EDIParser {
 					continue;
 				}
 				if (segment.SegContains(value)) {
+					retval.Add(segment);
+				}
+			}
+			return retval;
+		}
+		
+		/// <summary>
+		/// Gets all instances where a segment contains a value and segment is of type
+		/// </summary>
+		/// <param name="type"></param>
+		/// <param name="values"></param>
+		/// <returns></returns>
+		public List<Segment> GetSegmentsContainingValuesOfType(string type, params string[] values) {
+			List<Segment> retval = new List<Segment>();
+			
+			foreach (var segment in _segments) {
+				if (segment.type != type) {
+					continue;
+				}
+				if (segment.SegContainsValues(values)) {
+					retval.Add(segment);
+				}
+			}
+			return retval;
+		}
+		
+		
+		/// <summary>
+		/// Gets all instances where a segment contains a value and segment is of type
+		/// </summary>
+		/// <param name="type"></param>
+		/// <param name="values"></param>
+		/// <returns></returns>
+		public List<Segment> GetSegmentsContainingValuesOfNotType(string type, params string[] values) {
+			List<Segment> retval = new List<Segment>();
+			
+			foreach (var segment in _segments) {
+				if (segment.type == type) {
+					continue;
+				}
+				if (segment.SegContainsValues(values)) {
 					retval.Add(segment);
 				}
 			}
