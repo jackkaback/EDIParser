@@ -86,6 +86,22 @@ namespace EDIParser {
 
 			return false;
 		}
+		
+		/// <summary>
+		/// Used to tell if a segment contains a specific string
+		/// </summary>
+		/// <param name="values"></param>
+		/// <returns></returns>
+		public bool SegContainsValues(params string[] values) {
+			foreach (var e in _elements) {
+				foreach (var value in values) {
+					if (CultureInfo.InvariantCulture.CompareInfo.IndexOf(e, value, CompareOptions.IgnoreCase) >= 0) {
+						return true;
+					}
+				}
+			}
+			return false;
+		}
 
 		/// <summary>
 		/// Finds the first instance where the value exists
@@ -124,6 +140,30 @@ namespace EDIParser {
 				}
 			}
 
+			return retVals.ToArray();
+		}
+		
+		/// <summary>
+		/// Returns the positions of all elements where any value is a match
+		/// </summary>
+		/// <param name="values"></param>
+		/// <returns></returns>
+		public int[] SegContainsValuesAtAddresses(params string[] values) {
+			List<int> retVals = new List<int>();
+
+			foreach (var e in _elements) {
+				if (_elements.IndexOf(e) == 0) {
+					continue;
+				}
+
+				foreach (var value in values) {
+					if (CultureInfo.InvariantCulture.CompareInfo.IndexOf(e, value, CompareOptions.IgnoreCase) >= 0) {
+						retVals.Add(_elements.IndexOf(e));
+						break;
+					}
+				}
+			}
+			
 			return retVals.ToArray();
 		}
 	}
