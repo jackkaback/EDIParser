@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -232,7 +231,7 @@ namespace EDIParser {
 				}
 			}
 		}
-		
+
 		/// <summary>
 		/// Same as the other but if the start of the trailer isn't consistent
 		/// </summary>
@@ -498,6 +497,22 @@ namespace EDIParser {
 			}
 
 			return n1Loop;
+		}
+		
+		/// <summary>
+		/// Grabs every message segment in the document
+		/// </summary>
+		/// <returns></returns>
+		public List<Segment> GetAllMessageSegments() {
+			string[] types = {"N9", "MTX", "MSG"};
+			List<Segment> retval = new List<Segment>();
+			foreach (var segment in _segments) {
+				if (types.Contains(segment.type)) {
+					retval.Add(segment);
+				}
+			}
+
+			return retval;
 		}
 
 		/// <summary>

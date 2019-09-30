@@ -1,6 +1,6 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 
 namespace EDIParser {
 	public class EDIDocument {
@@ -17,6 +17,53 @@ namespace EDIParser {
 		/// </summary>
 		/// <param name="file"></param>
 		public EDIDocument(string file) {
+			var elementTerm = file[104];
+			var segTerminator = file[106];
+			var lines = file.Split(segTerminator);
+
+			foreach (var line in lines) {
+				Segment t = new Segment(line.Split(elementTerm), segTerminator, elementTerm);
+
+				//Dealing with the special segments here
+				if (t.type == "ISA") {
+					_ISA = t;
+					continue;
+				}
+
+				if (t.type == "GS") {
+					_currentEnvlope = new Envelope(t);
+					continue;
+				}
+
+				if (t.type == "GE") {
+					_currentEnvlope.Ge = t;
+					_currentEnvlope.GenerateToString();
+					_envelopes.Add(_currentEnvlope);
+					continue;
+				}
+
+				if (t.type == "IEA") {
+					_IEA = t;
+					GenerateToString();
+					continue;
+				}
+
+				_segments.Add(t);
+
+				if (t.type == "SE") {
+					_currentEnvlope.addDocument(new Document(_segments));
+					_segments = new List<Segment>();
+				}
+			}
+		}
+
+		/// <summary>
+		/// Generates the EDI document from the streamreader, stream reader needs to be at the start
+		/// </summary>
+		/// <param name="reader"></param>
+		public EDIDocument(StreamReader reader) {
+			string file = reader.ReadToEnd();
+			reader.Close();
 			var elementTerm = file[104];
 			var segTerminator = file[106];
 			var lines = file.Split(segTerminator);

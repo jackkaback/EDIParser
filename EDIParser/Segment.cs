@@ -86,7 +86,7 @@ namespace EDIParser {
 
 			return false;
 		}
-		
+
 		/// <summary>
 		/// Used to tell if a segment contains a specific string
 		/// </summary>
@@ -100,6 +100,7 @@ namespace EDIParser {
 					}
 				}
 			}
+
 			return false;
 		}
 
@@ -113,7 +114,7 @@ namespace EDIParser {
 				if (_elements.IndexOf(e) == 0) {
 					continue;
 				}
-				
+
 				if (CultureInfo.InvariantCulture.CompareInfo.IndexOf(e, value, CompareOptions.IgnoreCase) >= 0) {
 					return _elements.IndexOf(e);
 				}
@@ -134,7 +135,7 @@ namespace EDIParser {
 				if (_elements.IndexOf(e) == 0) {
 					continue;
 				}
-				
+
 				if (CultureInfo.InvariantCulture.CompareInfo.IndexOf(e, value, CompareOptions.IgnoreCase) >= 0) {
 					retVals.Add(_elements.IndexOf(e));
 				}
@@ -142,7 +143,7 @@ namespace EDIParser {
 
 			return retVals.ToArray();
 		}
-		
+
 		/// <summary>
 		/// Returns the positions of all elements where any value is a match
 		/// </summary>
@@ -163,7 +164,7 @@ namespace EDIParser {
 					}
 				}
 			}
-			
+
 			return retVals.ToArray();
 		}
 	}
