@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 
 namespace EDIParser {
-	public class EDIDocument {
+	public class EDIDocument : IDisposable {
 		private Segment _ISA;
 		private Segment _IEA;
 		private string _toString = "";
@@ -142,6 +142,8 @@ namespace EDIParser {
 					if (throwError && !DoEnvelopeCountsMatch()) {
 						throw new Exception("IEA count and count of envelopes do not match");
 					}
+					
+					_currentEnvlope?.Dispose();
 
 					GenerateToString();
 					continue;
@@ -337,6 +339,12 @@ namespace EDIParser {
 
 		public override string ToString() {
 			return _toString;
+		}
+
+		public void Dispose() {
+			_ISA?.Dispose();
+			_IEA?.Dispose();
+			_currentEnvlope?.Dispose();
 		}
 	}
 }

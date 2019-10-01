@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 namespace EDIParser {
-	public class Document {
+	public class Document : IDisposable {
 		/// <summary>
 		/// The document type express as the number
 		/// </summary>
@@ -566,6 +566,14 @@ namespace EDIParser {
 		/// <returns></returns>
 		public bool DoSegemnetCountsMatch() {
 			return _segments.Count == int.Parse(SEGetSECount());
+		}
+
+		public void Dispose() {
+			_ST?.Dispose();
+			_SE?.Dispose();
+			header?.Dispose();
+			trailer?.Dispose();
+			h1Loop?.Dispose();
 		}
 	}
 }

@@ -1,8 +1,9 @@
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 
 namespace EDIParser {
-	public class Segment {
+	public class Segment : IDisposable {
 		public readonly string type;
 
 		private char _elementTerm = '*';
@@ -166,6 +167,9 @@ namespace EDIParser {
 			}
 
 			return retVals.ToArray();
+		}
+
+		public void Dispose() {
 		}
 	}
 }

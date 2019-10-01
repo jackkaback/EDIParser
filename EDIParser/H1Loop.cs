@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 namespace EDIParser {
-	public class H1Loop {
+	public class H1Loop : IDisposable {
 		private SegmentGroup _segements = new SegmentGroup();
 		private int _level;
 		private int _parent;
@@ -69,6 +69,10 @@ namespace EDIParser {
 			}
 
 			return _tostring;
+		}
+
+		public void Dispose() {
+			_thisH1?.Dispose();
 		}
 	}
 }
