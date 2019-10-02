@@ -10,6 +10,11 @@ namespace EDIParser {
 		private char _segterminator;
 		private char _subElementTerm;
 
+		/// <summary>
+		/// Only set after using the constructor with the sub element feature or calling SegHasSubElelments
+		/// </summary>
+		public bool hasSubelements;
+
 		private List<string> _elements = new List<string>();
 
 		public Segment(string[] values) {
@@ -35,6 +40,8 @@ namespace EDIParser {
 			_elementTerm = eleterm;
 			_segterminator = segterm;
 			_subElementTerm = subElement;
+
+			SegHasSubElelments();
 
 			foreach (var i in values) {
 				_elements.Add(i);
@@ -198,10 +205,12 @@ namespace EDIParser {
 
 			foreach (var element in _elements) {
 				if (element.Contains(_subElementTerm.ToString())) {
+					hasSubelements = true;
 					return true;
 				}
 			}
 
+			hasSubelements = false;
 			return false;
 		}
 		
