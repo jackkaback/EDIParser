@@ -18,6 +18,7 @@ namespace EDIParser {
 		/// <param name="file"></param>
 		public EDIDocument(string file) {
 			var elementTerm = file[104];
+			var subElement = file[105];
 			var segTerminator = file[106];
 			var lines = file.Split(segTerminator);
 
@@ -30,6 +31,8 @@ namespace EDIParser {
 					continue;
 				}
 
+				t.SubElementTerm = subElement;
+				
 				if (t.type == "GS") {
 					_currentEnvlope = new Envelope(t);
 					continue;
@@ -339,6 +342,10 @@ namespace EDIParser {
 
 		public override string ToString() {
 			return _toString;
+		}
+
+		void IDisposable.Dispose() {
+			Dispose();
 		}
 
 		public void Dispose() {

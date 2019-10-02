@@ -303,7 +303,11 @@ namespace EDIParser {
 
 			return retval;
 		}
-		
+
+
+		void IDisposable.Dispose() {
+			Dispose();
+		}
 
 		public void Dispose() {
 		}

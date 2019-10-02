@@ -6,8 +6,9 @@ namespace EDIParser {
 	public class Segment : IDisposable {
 		public readonly string type;
 
-		private char _elementTerm = '*';
-		private char _segterminator = '~';
+		private char _elementTerm;
+		private char _segterminator;
+		private char _subElementTerm;
 
 		private List<string> _elements = new List<string>();
 
@@ -28,6 +29,18 @@ namespace EDIParser {
 				_elements.Add(i);
 			}
 		}
+		
+		public Segment(string[] values, char segterm, char eleterm, char subElement) {
+			type = values[0];
+			_elementTerm = eleterm;
+			_segterminator = segterm;
+			_subElementTerm = subElement;
+
+			foreach (var i in values) {
+				_elements.Add(i);
+			}
+		}
+		
 
 		/// <summary>
 		/// For making a null object
@@ -71,6 +84,10 @@ namespace EDIParser {
 		/// <param name="index"></param>
 		public string this[int index] {
 			get => GetElement(index);
+		}
+
+		public char SubElementTerm {
+			set => _subElementTerm = value;
 		}
 
 		/// <summary>
@@ -167,6 +184,94 @@ namespace EDIParser {
 			}
 
 			return retVals.ToArray();
+		}
+
+		/// <summary>
+		/// checks if this segment has subelements
+		/// </summary>
+		/// <returns></returns>
+		/// <exception cref="Exception"></exception>
+		public bool SegHasSubElelments() {
+			if (_subElementTerm == '\0') {
+				throw new Exception("No sub element terminator exists");
+			}
+
+			foreach (var element in _elements) {
+				if (element.Contains(_subElementTerm.ToString())) {
+					return true;
+				}
+			}
+
+			return false;
+		}
+		
+		/// <summary>
+		/// checks if this segment has subelements
+		/// </summary>
+		/// <param name="sub"></param>
+		/// <returns></returns>
+		public bool SegHasSubElelments(char sub) {
+			_subElementTerm = sub;
+			return SegHasSubElelments();
+		}
+
+
+		/// <summary>
+		/// Finds all elements with sub elements
+		/// </summary>
+		/// <returns></returns>
+		/// <exception cref="Exception"></exception>
+		public List<int> PositionOfAllSubElements() {
+			if (_subElementTerm == '\0') {
+				throw new Exception("No sub element terminator exists");
+			}
+			List<int> retval = new List<int>();
+			foreach (var element in _elements) {
+				if (SegContains(_subElementTerm.ToString())) {
+					retval.Add(_elements.IndexOf(element));
+				}
+			}
+
+			return retval;
+		}
+
+		/// <summary>
+		/// Finds all elements with sub elements
+		/// </summary>
+		/// <param name="sub"></param>
+		/// <returns></returns>
+		public List<int> PositionOfAllSubElements(char sub) {
+			_subElementTerm = sub;
+			return PositionOfAllSubElements();
+		}
+
+		/// <summary>
+		/// Returns all the elements in a segment that has sub elements
+		/// </summary>
+		/// <returns></returns>
+		/// <exception cref="Exception"></exception>	
+		public List<string> GetAllElementWithSubElements() {
+			if (_subElementTerm == '\0') {
+				throw new Exception("No sub element terminator exists");
+			}
+			List<string> retval = new List<string>();
+			foreach (var element in _elements) {
+				if (SegContains(_subElementTerm.ToString())) {
+					retval.Add(element);
+				}
+			}
+
+			return retval;
+		}
+		
+		
+		public List<string> GetAllElementWithSubElements(char sub) {
+			_subElementTerm = sub;
+			return GetAllElementWithSubElements();
+		}
+		
+		void IDisposable.Dispose() {
+			Dispose();
 		}
 
 		public void Dispose() {

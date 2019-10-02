@@ -71,6 +71,10 @@ namespace EDIParser {
 			return _tostring;
 		}
 
+		void IDisposable.Dispose() {
+			Dispose();
+		}
+
 		public void Dispose() {
 			_thisH1?.Dispose();
 		}

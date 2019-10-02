@@ -568,6 +568,10 @@ namespace EDIParser {
 			return _segments.Count == int.Parse(SEGetSECount());
 		}
 
+		void IDisposable.Dispose() {
+			Dispose();
+		}
+
 		public void Dispose() {
 			_ST?.Dispose();
 			_SE?.Dispose();

@@ -126,6 +126,10 @@ namespace EDIParser {
 			}
 		}
 
+		void IDisposable.Dispose() {
+			Dispose();
+		}
+
 		public void Dispose() {
 			_GS?.Dispose();
 			_GE?.Dispose();
