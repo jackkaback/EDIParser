@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 
 namespace EDIParser {
-	public class Envelope : IDisposable {
+	public class Envelope {
 		private Segment _GS;
 		private Segment _GE;
 		private string _toString = "";
@@ -124,10 +124,6 @@ namespace EDIParser {
 			if (_throwError && !DoDocumentCountsMatch()) {
 				throw new Exception("GE count and document count's do not match'");
 			}
-		}
-
-		void IDisposable.Dispose() {
-			Dispose();
 		}
 
 		public void Dispose() {

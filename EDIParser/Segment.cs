@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 
 namespace EDIParser {
-	public class Segment : IDisposable {
+	public class Segment {
 		public readonly string type;
 
 		private char _elementTerm;
@@ -17,6 +17,10 @@ namespace EDIParser {
 
 		private List<string> _elements = new List<string>();
 
+		/// <summary>
+		/// Constructor with only the elements
+		/// </summary>
+		/// <param name="values"></param>
 		public Segment(string[] values) {
 			type = values[0];
 
@@ -25,6 +29,12 @@ namespace EDIParser {
 			}
 		}
 
+		/// <summary>
+		/// Constructor with elements, segterminator, and element terminator
+		/// </summary>
+		/// <param name="values"></param>
+		/// <param name="segterm"></param>
+		/// <param name="eleterm"></param>
 		public Segment(string[] values, char segterm, char eleterm) {
 			type = values[0];
 			_elementTerm = eleterm;
@@ -34,7 +44,14 @@ namespace EDIParser {
 				_elements.Add(i);
 			}
 		}
-		
+
+		/// <summary>
+		/// Constructor with elements, segterminator, element terminator, and subElement terminator
+		/// </summary>
+		/// <param name="values"></param>
+		/// <param name="segterm"></param>
+		/// <param name="eleterm"></param>
+		/// <param name="subElement"></param>
 		public Segment(string[] values, char segterm, char eleterm, char subElement) {
 			type = values[0];
 			_elementTerm = eleterm;
@@ -47,7 +64,6 @@ namespace EDIParser {
 				_elements.Add(i);
 			}
 		}
-		
 
 		/// <summary>
 		/// For making a null object
@@ -213,7 +229,7 @@ namespace EDIParser {
 			hasSubelements = false;
 			return false;
 		}
-		
+
 		/// <summary>
 		/// checks if this segment has subelements
 		/// </summary>
@@ -224,7 +240,6 @@ namespace EDIParser {
 			return SegHasSubElelments();
 		}
 
-
 		/// <summary>
 		/// Finds all elements with sub elements
 		/// </summary>
@@ -234,6 +249,7 @@ namespace EDIParser {
 			if (_subElementTerm == '\0') {
 				throw new Exception("No sub element terminator exists");
 			}
+
 			List<int> retval = new List<int>();
 			foreach (var element in _elements) {
 				if (SegContains(_subElementTerm.ToString())) {
@@ -263,6 +279,7 @@ namespace EDIParser {
 			if (_subElementTerm == '\0') {
 				throw new Exception("No sub element terminator exists");
 			}
+
 			List<string> retval = new List<string>();
 			foreach (var element in _elements) {
 				if (SegContains(_subElementTerm.ToString())) {
@@ -272,15 +289,10 @@ namespace EDIParser {
 
 			return retval;
 		}
-		
-		
+
 		public List<string> GetAllElementWithSubElements(char sub) {
 			_subElementTerm = sub;
 			return GetAllElementWithSubElements();
-		}
-		
-		void IDisposable.Dispose() {
-			Dispose();
 		}
 
 		public void Dispose() {

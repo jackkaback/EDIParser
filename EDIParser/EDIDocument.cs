@@ -3,12 +3,11 @@ using System.Collections.Generic;
 using System.IO;
 
 namespace EDIParser {
-	public class EDIDocument : IDisposable {
+	public class EDIDocument {
 		private Segment _ISA;
 		private Segment _IEA;
 		private string _toString = "";
 		private List<Envelope> _envelopes = new List<Envelope>();
-		private List<Segment> _segments = new List<Segment>();
 
 		private Envelope _currentEnvlope;
 
@@ -21,7 +20,7 @@ namespace EDIParser {
 			var subElement = file[105];
 			var segTerminator = file[106];
 			var lines = file.Split(segTerminator);
-
+			List<Segment> segments = new List<Segment>();
 			foreach (var line in lines) {
 				Segment t = new Segment(line.Split(elementTerm), segTerminator, elementTerm);
 
@@ -32,7 +31,7 @@ namespace EDIParser {
 				}
 
 				t.SubElementTerm = subElement;
-				
+
 				if (t.type == "GS") {
 					_currentEnvlope = new Envelope(t);
 					continue;
@@ -47,15 +46,16 @@ namespace EDIParser {
 
 				if (t.type == "IEA") {
 					_IEA = t;
+					_currentEnvlope?.Dispose();
 					GenerateToString();
 					continue;
 				}
 
-				_segments.Add(t);
+				segments.Add(t);
 
 				if (t.type == "SE") {
-					_currentEnvlope.addDocument(new Document(_segments));
-					_segments = new List<Segment>();
+					_currentEnvlope.addDocument(new Document(segments));
+					segments = new List<Segment>();
 				}
 			}
 		}
@@ -68,9 +68,10 @@ namespace EDIParser {
 			string file = reader.ReadToEnd();
 			reader.Close();
 			var elementTerm = file[104];
+			var subElement = file[105];
 			var segTerminator = file[106];
 			var lines = file.Split(segTerminator);
-
+			List<Segment> segments = new List<Segment>();
 			foreach (var line in lines) {
 				Segment t = new Segment(line.Split(elementTerm), segTerminator, elementTerm);
 
@@ -79,6 +80,8 @@ namespace EDIParser {
 					_ISA = t;
 					continue;
 				}
+
+				t.SubElementTerm = subElement;
 
 				if (t.type == "GS") {
 					_currentEnvlope = new Envelope(t);
@@ -94,15 +97,16 @@ namespace EDIParser {
 
 				if (t.type == "IEA") {
 					_IEA = t;
+					_currentEnvlope?.Dispose();
 					GenerateToString();
 					continue;
 				}
 
-				_segments.Add(t);
+				segments.Add(t);
 
 				if (t.type == "SE") {
-					_currentEnvlope.addDocument(new Document(_segments));
-					_segments = new List<Segment>();
+					_currentEnvlope.addDocument(new Document(segments));
+					segments = new List<Segment>();
 				}
 			}
 		}
@@ -115,9 +119,10 @@ namespace EDIParser {
 		/// <exception cref="Exception"></exception>
 		public EDIDocument(string file, bool throwError) {
 			var elementTerm = file[104];
+			var subElement = file[105];
 			var segTerminator = file[106];
 			var lines = file.Split(segTerminator);
-
+			List<Segment> segments = new List<Segment>();
 			foreach (var line in lines) {
 				Segment t = new Segment(line.Split(elementTerm), segTerminator, elementTerm);
 
@@ -126,6 +131,8 @@ namespace EDIParser {
 					_ISA = t;
 					continue;
 				}
+
+				t.SubElementTerm = subElement;
 
 				if (t.type == "GS") {
 					_currentEnvlope = new Envelope(t, throwError);
@@ -145,23 +152,80 @@ namespace EDIParser {
 					if (throwError && !DoEnvelopeCountsMatch()) {
 						throw new Exception("IEA count and count of envelopes do not match");
 					}
-					
+
 					_currentEnvlope?.Dispose();
 
 					GenerateToString();
 					continue;
 				}
 
-				_segments.Add(t);
+				segments.Add(t);
 
 				if (t.type == "SE") {
-					_currentEnvlope.addDocument(new Document(_segments, throwError));
-					_segments = new List<Segment>();
+					_currentEnvlope.addDocument(new Document(segments, throwError));
+					segments = new List<Segment>();
 				}
 			}
 
 			if (throwError && _envelopes.Count != int.Parse(IEAEnvelopeCount())) {
 				throw new Exception("Envelope count does not equal the IEA count");
+			}
+		}
+
+		/// <summary>
+		/// Generates the entire EDI document, and can throw an error if any piece of data doesn't match
+		/// </summary>
+		/// <param name="reader"></param>
+		/// <param name="throwError"></param>
+		/// <exception cref="Exception"></exception>
+		public EDIDocument(StreamReader reader, bool throwError) {
+			string file = reader.ReadToEnd();
+			reader.Close();
+			var elementTerm = file[104];
+			var subElement = file[105];
+			var segTerminator = file[106];
+			var lines = file.Split(segTerminator);
+			List<Segment> segments = new List<Segment>();
+			foreach (var line in lines) {
+				Segment t = new Segment(line.Split(elementTerm), segTerminator, elementTerm);
+
+				//Dealing with the special segments here
+				if (t.type == "ISA") {
+					_ISA = t;
+					continue;
+				}
+
+				t.SubElementTerm = subElement;
+
+				if (t.type == "GS") {
+					_currentEnvlope = new Envelope(t, throwError);
+					continue;
+				}
+
+				if (t.type == "GE") {
+					_currentEnvlope.Ge = t;
+					_currentEnvlope.GenerateToString();
+					_envelopes.Add(_currentEnvlope);
+					continue;
+				}
+
+				if (t.type == "IEA") {
+					_IEA = t;
+					GenerateToString();
+					if (throwError && !DoEnvelopeCountsMatch()) {
+						throw new Exception("IEA count and count of envelopes do not match");
+					}
+
+					_currentEnvlope?.Dispose();
+					continue;
+				}
+
+				segments.Add(t);
+
+				if (t.type == "SE") {
+					_currentEnvlope.addDocument(new Document(segments));
+					segments = new List<Segment>();
+				}
 			}
 		}
 
@@ -342,10 +406,6 @@ namespace EDIParser {
 
 		public override string ToString() {
 			return _toString;
-		}
-
-		void IDisposable.Dispose() {
-			Dispose();
 		}
 
 		public void Dispose() {

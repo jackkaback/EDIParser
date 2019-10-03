@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 namespace EDIParser {
-	public class SegmentGroup : IDisposable {
+	public class SegmentGroup {
 		private List<Segment> _segments = new List<Segment>();
 
 		public void add(Segment s) {
@@ -302,11 +302,6 @@ namespace EDIParser {
 			}
 
 			return retval;
-		}
-
-
-		void IDisposable.Dispose() {
-			Dispose();
 		}
 
 		public void Dispose() {

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 namespace EDIParser {
-	public class Document : IDisposable {
+	public class Document {
 		/// <summary>
 		/// The document type express as the number
 		/// </summary>
@@ -54,7 +54,16 @@ namespace EDIParser {
 		/// <param name="segments"></param>
 		public Document(List<Segment> segments) {
 			this._segments = segments;
-			DocumentType = segments[0].type;
+			DocumentType = segments[0][1];
+
+			if (segments[0].type != "ST" || segments.Last().type != "SE") {
+				throw new Exception("First or last segment is not ST/SE");
+			}
+
+			if (segments.Count == 2) {
+				throw new Exception("Document is empty");
+			}
+
 			_ST = segments[0];
 			_SE = segments.Last();
 
@@ -82,7 +91,16 @@ namespace EDIParser {
 		/// <param name="ThrowError"></param>
 		public Document(List<Segment> segments, bool ThrowError) {
 			this._segments = segments;
-			DocumentType = segments[0].type;
+			DocumentType = segments[0][1];
+
+			if (segments[0].type != "ST" || segments.Last().type != "SE") {
+				throw new Exception("First or last segment is not ST/SE");
+			}
+
+			if (segments.Count == 2) {
+				throw new Exception("Document is empty");
+			}
+
 			_ST = segments[0];
 			_SE = segments.Last();
 
@@ -498,7 +516,7 @@ namespace EDIParser {
 
 			return n1Loop;
 		}
-		
+
 		/// <summary>
 		/// Grabs every message segment in the document
 		/// </summary>
@@ -566,10 +584,6 @@ namespace EDIParser {
 		/// <returns></returns>
 		public bool DoSegemnetCountsMatch() {
 			return _segments.Count == int.Parse(SEGetSECount());
-		}
-
-		void IDisposable.Dispose() {
-			Dispose();
 		}
 
 		public void Dispose() {
