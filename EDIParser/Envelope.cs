@@ -21,7 +21,7 @@ namespace EDIParser {
 		/// <param name="gs"></param>
 		public Envelope(Segment gs) {
 			_GS = gs;
-			type = _GS.GetElement(1);
+			type = _GS[1];
 		}
 
 		/// <summary>
@@ -31,7 +31,7 @@ namespace EDIParser {
 		/// <param name="throwError"></param>
 		public Envelope(Segment gs, bool throwError) {
 			_GS = gs;
-			type = _GS.GetElement(1);
+			type = _GS[1];
 
 			_throwError = throwError;
 		}
@@ -84,12 +84,32 @@ namespace EDIParser {
 
 		#region Special GS/GE information
 
+		public string GSDocumentType() {
+			return _GS[1];
+		}
+
+		public string GSSenderID() {
+			return _GS[2];
+		}
+
+		public string GSRecieverID() {
+			return _GS[3];
+		}
+
+		public string GSDate() {
+			return _GS[4];
+		}
+
+		public string GSTime() {
+			return _GS[5];
+		}
+
 		public string GSGetEnvelopeID() {
-			return _GS.GetElement(6);
+			return _GS[6];
 		}
 
 		public string GEDocumentCount() {
-			return _GE.GetElement(1);
+			return _GE[1];
 		}
 
 		#endregion
