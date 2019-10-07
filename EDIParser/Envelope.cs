@@ -81,6 +81,13 @@ namespace EDIParser {
 		public int Length() {
 			return _Docs.Count;
 		}
+		
+		/// <summary>
+		/// For doing for loops rather than foreach
+		/// </summary>
+		public int Count() {
+			return _Docs.Count;
+		}
 
 		#region Special GS/GE information
 

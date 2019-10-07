@@ -562,6 +562,26 @@ namespace EDIParser {
 			}
 		}
 
+		public Segment GetSegment(int index) {
+			if (_segments.Count > index) {
+				return _segments[index];
+			}
+			
+			return new Segment();
+		}
+		
+		public Segment this[int index] {
+			get => GetSegment(index);
+		}
+
+		public int Count() {
+			return _segments.Count;
+		}
+		
+		public int Length() {
+			return _segments.Count;
+		}
+
 		#region Special ST/SE information
 
 		public string STGetID() {

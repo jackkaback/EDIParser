@@ -113,6 +113,14 @@ namespace EDIParser {
 			set => _subElementTerm = value;
 		}
 
+		public int Length() {
+			return _elements.Count;
+		}
+
+		public int Count() {
+			return _elements.Count;
+		}
+
 		/// <summary>
 		/// Used to tell if a segment contains a specific string
 		/// </summary>
@@ -288,6 +296,17 @@ namespace EDIParser {
 			}
 
 			return retval;
+		}
+
+		/// <summary>
+		/// Splits an element by the segment terminator
+		/// </summary>
+		/// <param name="element"></param>
+		/// <returns></returns>
+		public String[] SplitWithSubelement(int element) {
+			var retVal = _elements[element].Split(_subElementTerm);
+
+			return retVal;
 		}
 
 		public List<string> GetAllElementWithSubElements(char sub) {
