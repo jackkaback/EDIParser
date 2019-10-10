@@ -39,7 +39,7 @@ namespace EDIParser {
 		/// <summary>
 		/// A list of every item level loop
 		/// </summary>
-		public List<SegmentGroup> deatils = new List<SegmentGroup>();
+		public List<SegmentGroup> details = new List<SegmentGroup>();
 
 		/// <summary>
 		/// Everything in the trailer
@@ -238,10 +238,10 @@ namespace EDIParser {
 					case 1:
 						//Starts a new line item every time the line item segment is hit
 						if (segment.type == itemLevelType) {
-							deatils.Add(new SegmentGroup());
+							details.Add(new SegmentGroup());
 						}
 
-						deatils.Last().add(segment);
+						details.Last().add(segment);
 						break;
 					case 2:
 						trailer.add(segment);
@@ -281,10 +281,10 @@ namespace EDIParser {
 					case 1:
 						//Starts a new line item every time the line item segment is hit
 						if (segment.type == itemLevelType) {
-							deatils.Add(new SegmentGroup());
+							details.Add(new SegmentGroup());
 						}
 
-						deatils.Last().add(segment);
+						details.Last().add(segment);
 						break;
 					case 2:
 						trailer.add(segment);
@@ -534,6 +534,46 @@ namespace EDIParser {
 		}
 
 		/// <summary>
+		/// Checks the CTT count based on the count of the count of the Details
+		/// </summary>
+		/// <returns>-1 if different, 0 if no CTT found, 1 if the counts are the same/returns>
+		public int CheckCTTCount() {
+			Segment ctt = GetSegType("CTT");
+
+			if (ctt == new Segment()) {
+				return 0;
+			}
+
+			int count = int.Parse(ctt[1]);
+
+			return count == details.Count ? 1 : -1;
+		}
+
+		/// <summary>
+		/// Checks the CTT count based on the count of the countType
+		/// </summary>
+		/// <param name="counterType"></param>
+		/// <returns>-1 if different, 0 if no CTT found, 1 if the counts are the same/returns>
+		public int CheckCTTCountDefineCounter(string counterType) {
+			Segment ctt = GetSegType("CTT");
+
+			if (ctt == new Segment()) {
+				return 0;
+			}
+
+			int count = 0;
+			foreach (var seg in _segments) {
+				if (seg.type == counterType) {
+					count++;
+				}
+			}
+			
+			int CTTCount = int.Parse(ctt[1]);
+			
+			return CTTCount == count ? 1 : -1;
+		}
+
+		/// <summary>
 		/// Returns a segment group
 		/// </summary>
 		/// <param name="qualifier"></param>
@@ -566,10 +606,10 @@ namespace EDIParser {
 			if (_segments.Count > index) {
 				return _segments[index];
 			}
-			
+
 			return new Segment();
 		}
-		
+
 		public Segment this[int index] {
 			get => GetSegment(index);
 		}
@@ -577,7 +617,7 @@ namespace EDIParser {
 		public int Count() {
 			return _segments.Count;
 		}
-		
+
 		public int Length() {
 			return _segments.Count;
 		}
