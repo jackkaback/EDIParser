@@ -28,8 +28,8 @@ namespace EDIParser {
 		/// <summary>
 		/// returns a segment with a specific pattern, null/empty/whitespaces are wildcards
 		/// </summary>
-		/// <param name="type"></param>
-		/// <param name="pattern"></param>
+		/// <param name="type">Type of the segment</param>
+		/// <param name="pattern">Pattern of the segment</param>
 		/// <returns></returns>
 		public Segment GetSegmentWithPattern(string type, params string[] pattern) {
 			foreach (var seg in _segments) {
@@ -56,8 +56,8 @@ namespace EDIParser {
 		/// <summary>
 		/// Returns all Segment with a given pattern
 		/// </summary>
-		/// <param name="type"></param>
-		/// <param name="pattern"></param>
+		/// <param name="type">Type of the segment</param>
+		/// <param name="pattern">Pattern of the segment</param>
 		/// <returns></returns>
 		public List<Segment> GetAllSegmentsWithPattern(string type, params string[] pattern) {
 			List<Segment> retvals = new List<Segment>();
@@ -86,7 +86,7 @@ namespace EDIParser {
 		/// <summary>
 		/// Gets all instances where a segment contains a value
 		/// </summary>
-		/// <param name="value"></param>
+		/// <param name="value">Desired substring</param>
 		/// <returns></returns>
 		public List<Segment> GetAllSegmentsContaining(string value) {
 			List<Segment> retval = new List<Segment>();
@@ -103,8 +103,8 @@ namespace EDIParser {
 		/// <summary>
 		/// Gets all instances where a segment contains a value and segment is of type
 		/// </summary>
-		/// <param name="type"></param>
-		/// <param name="value"></param>
+		/// <param name="type">Type of segment</param>
+		/// <param name="value">Desired substring</param>
 		/// <returns></returns>
 		public List<Segment> GetAllSegmentsContainingOfType(string type, string value) {
 			List<Segment> retval = new List<Segment>();
@@ -125,8 +125,8 @@ namespace EDIParser {
 		/// <summary>
 		/// Gets all instances where a segment contains a value and segment is of type
 		/// </summary>
-		/// <param name="type"></param>
-		/// <param name="values"></param>
+		/// <param name="type">Type of segment</param>
+		/// <param name="values">Desired substrings</param>
 		/// <returns></returns>
 		public List<Segment> GetSegmentsContainingValuesOfType(string type, params string[] values) {
 			List<Segment> retval = new List<Segment>();
@@ -147,8 +147,8 @@ namespace EDIParser {
 		/// <summary>
 		/// Gets all instances where a segment contains a value and segment is of type
 		/// </summary>
-		/// <param name="type"></param>
-		/// <param name="values"></param>
+		/// <param name="type">Type of segment</param>
+		/// <param name="values">Desired substrings</param>
 		/// <returns></returns>
 		public List<Segment> GetSegmentsContainingValuesOfNotType(string type, params string[] values) {
 			List<Segment> retval = new List<Segment>();
@@ -169,7 +169,8 @@ namespace EDIParser {
 		/// <summary>
 		/// Gets all instances where a segment contains a value and the segment is not of a type
 		/// </summary>
-		/// <param name="value"></param>
+		/// <param name="type">Type of segment</param>
+		/// <param name="value">Desired substrings</param>
 		/// <returns></returns>
 		public List<Segment> GetAllSegmentsContainingNotOfType(string type, string value) {
 			List<Segment> retval = new List<Segment>();
@@ -190,8 +191,8 @@ namespace EDIParser {
 		/// <summary>
 		/// Checks is a segment exists with a given pattern
 		/// </summary>
-		/// <param name="type"></param>
-		/// <param name="pattern"></param>
+		/// <param name="type">Type of segment</param>
+		/// <param name="value">Desired substrings</param>
 		/// <returns></returns>
 		public bool DoesSegExistFromPattern(string type, params string[] pattern) {
 			foreach (var seg in _segments) {
@@ -218,8 +219,8 @@ namespace EDIParser {
 		/// <summary>
 		/// Gets the N1, N2, N3, N4 and addition fields of a given loop
 		/// </summary>
-		/// <param name="qualifier"></param>
-		/// <param name="additionFields"></param>
+		/// <param name="qualifier">Type of N1 loop</param>
+		/// <param name="additionFields">Additional segments</param>
 		/// <returns></returns>
 		public List<Segment> getN1LoopOfType(string qualifier, string[] additionFields) {
 			List<Segment> n1Loop = new List<Segment>();
@@ -274,7 +275,7 @@ namespace EDIParser {
 		/// <summary>
 		/// This is the easier way to get an element
 		/// </summary>
-		/// <param name="index"></param>
+		/// <param name="index">index of segment</param>
 		public Segment this[int index] {
 			get => GetElement(index);
 		}

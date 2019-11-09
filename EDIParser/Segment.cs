@@ -20,7 +20,7 @@ namespace EDIParser {
 		/// <summary>
 		/// Constructor with only the elements
 		/// </summary>
-		/// <param name="values"></param>
+		/// <param name="values">List of elements</param>
 		public Segment(string[] values) {
 			type = values[0];
 
@@ -32,9 +32,9 @@ namespace EDIParser {
 		/// <summary>
 		/// Constructor with elements, segterminator, and element terminator
 		/// </summary>
-		/// <param name="values"></param>
-		/// <param name="segterm"></param>
-		/// <param name="eleterm"></param>
+		/// <param name="values">List of elements</param>
+		/// <param name="segterm">Segment terminator</param>
+		/// <param name="eleterm">Element terminator</param>
 		public Segment(string[] values, char segterm, char eleterm) {
 			type = values[0];
 			_elementTerm = eleterm;
@@ -48,10 +48,10 @@ namespace EDIParser {
 		/// <summary>
 		/// Constructor with elements, segterminator, element terminator, and subElement terminator
 		/// </summary>
-		/// <param name="values"></param>
-		/// <param name="segterm"></param>
-		/// <param name="eleterm"></param>
-		/// <param name="subElement"></param>
+		/// <param name="values">List of elements</param>
+		/// <param name="segterm">Segment terminator</param>
+		/// <param name="eleterm">Element terminator</param>
+		/// <param name="subElement">Sub element terminator</param>
 		public Segment(string[] values, char segterm, char eleterm, char subElement) {
 			type = values[0];
 			_elementTerm = eleterm;
@@ -74,7 +74,7 @@ namespace EDIParser {
 		/// <summary>
 		/// Gets the value of the element at I if it exists
 		/// </summary>
-		/// <param name="i"></param>
+		/// <param name="i">Element desired</param>
 		/// <returns>The I'th element or an empty string</returns>
 		public string GetElement(int i) {
 			if (_elements.Count > i) {
@@ -104,7 +104,7 @@ namespace EDIParser {
 		/// <summary>
 		/// This is the easier way to get an element
 		/// </summary>
-		/// <param name="index"></param>
+		/// <param name="index">Element number desired</param>
 		public string this[int index] {
 			get => GetElement(index);
 		}
@@ -124,7 +124,7 @@ namespace EDIParser {
 		/// <summary>
 		/// Used to tell if a segment contains a specific string
 		/// </summary>
-		/// <param name="value"></param>
+		/// <param name="value">Desired substring</param>
 		/// <returns></returns>
 		public bool SegContains(string value) {
 			foreach (var e in _elements) {
@@ -139,7 +139,7 @@ namespace EDIParser {
 		/// <summary>
 		/// Used to tell if a segment contains a specific string
 		/// </summary>
-		/// <param name="values"></param>
+		/// <param name="values">Desired substring</param>
 		/// <returns></returns>
 		public bool SegContainsValues(params string[] values) {
 			foreach (var e in _elements) {
@@ -156,7 +156,7 @@ namespace EDIParser {
 		/// <summary>
 		/// Finds the first instance where the value exists
 		/// </summary>
-		/// <param name="value"></param>
+		/// <param name="value">Desired substring</param>
 		/// <returns>index of found value, -1 if it doesn't exist'</returns>
 		public int SegContainsAtAddress(string value) {
 			foreach (var e in _elements) {
@@ -175,8 +175,8 @@ namespace EDIParser {
 		/// <summary>
 		/// Finds all instances of where the data exists and returns a list of their indexes
 		/// </summary>
-		/// <param name="value"></param>
-		/// <returns></returns>
+		/// <param name="value">Desired substring</param>
+		/// <returns>Indexes of all found values</returns>
 		public int[] SegContainsAtAddresses(string value) {
 			List<int> retVals = new List<int>();
 
@@ -196,8 +196,8 @@ namespace EDIParser {
 		/// <summary>
 		/// Returns the positions of all elements where any value is a match
 		/// </summary>
-		/// <param name="values"></param>
-		/// <returns></returns>
+		/// <param name="values">Desired substring</param>
+		/// <returns>Indexes of all found values</returns>
 		public int[] SegContainsValuesAtAddresses(params string[] values) {
 			List<int> retVals = new List<int>();
 
@@ -241,7 +241,7 @@ namespace EDIParser {
 		/// <summary>
 		/// checks if this segment has subelements
 		/// </summary>
-		/// <param name="sub"></param>
+		/// <param name="sub">Subelement separator</param>
 		/// <returns></returns>
 		public bool SegHasSubElelments(char sub) {
 			_subElementTerm = sub;
@@ -271,7 +271,7 @@ namespace EDIParser {
 		/// <summary>
 		/// Finds all elements with sub elements
 		/// </summary>
-		/// <param name="sub"></param>
+		/// <param name="sub">Subelement separator</param>
 		/// <returns></returns>
 		public List<int> PositionOfAllSubElements(char sub) {
 			_subElementTerm = sub;
@@ -301,7 +301,7 @@ namespace EDIParser {
 		/// <summary>
 		/// Splits an element by the segment terminator
 		/// </summary>
-		/// <param name="element"></param>
+		/// <param name="element">Specific element with subelement separator</param>
 		/// <returns></returns>
 		public String[] SplitWithSubelement(int element) {
 			var retVal = _elements[element].Split(_subElementTerm);

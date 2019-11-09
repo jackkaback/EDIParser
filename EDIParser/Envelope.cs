@@ -115,6 +115,10 @@ namespace EDIParser {
 			return _GS[6];
 		}
 
+		public int GSGetEnvelopeIDInt() {
+			return int.Parse(_GS[6]);
+		}
+
 		public string GEDocumentCount() {
 			return _GE[1];
 		}

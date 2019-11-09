@@ -51,7 +51,7 @@ namespace EDIParser {
 		/// <summary>
 		/// Generates the whole transaction
 		/// </summary>
-		/// <param name="segments"></param>
+		/// <param name="segments">All segments in the document</param>
 		public Document(List<Segment> segments) {
 			this._segments = segments;
 			DocumentType = segments[0][1];
@@ -87,8 +87,8 @@ namespace EDIParser {
 		/// <summary>
 		/// This one will throw an error if the SE count is different
 		/// </summary>
-		/// <param name="segments"></param>
-		/// <param name="ThrowError"></param>
+		/// <param name="segments">All segments in the document</param>
+		/// <param name="ThrowError">Throw an error if the counts don't match'</param>
 		public Document(List<Segment> segments, bool ThrowError) {
 			this._segments = segments;
 			DocumentType = segments[0][1];
@@ -119,6 +119,11 @@ namespace EDIParser {
 			}
 		}
 
+		/// <summary>
+		/// Checks is a given segment exists in the document
+		/// </summary>
+		/// <param name="type">Type of the segment</param>
+		/// <returns></returns>
 		public bool DoesSegExist(string type) {
 			foreach (var segment in _segments) {
 				if (segment.type == type) {
@@ -626,6 +631,10 @@ namespace EDIParser {
 
 		public string STGetID() {
 			return _ST.GetElement(2);
+		}
+
+		public int STGetIDInt() {
+			return int.Parse(_ST.GetElement(2));
 		}
 
 		public string SEGetSECount() {
