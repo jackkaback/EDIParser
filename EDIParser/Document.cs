@@ -137,8 +137,8 @@ namespace EDIParser {
 		/// <summary>
 		/// Checks is a segment exists with a given pattern. This is slower than looking for it in specific chunk
 		/// </summary>
-		/// <param name="type"></param>
-		/// <param name="pattern"></param>
+		/// <param name="type">Type of desired segment</param>
+		/// <param name="pattern">additional fields in the segment</param>
 		/// <returns></returns>
 		public bool DoesSegExistFromPattern(string type, params string[] pattern) {
 			foreach (var seg in _segments) {
@@ -163,10 +163,10 @@ namespace EDIParser {
 		}
 
 		/// <summary>
-		/// Returns the first instance of a given segment type, else an empty segment
+		/// Finds the first instance of a segment
 		/// </summary>
-		/// <param name="type"></param>
-		/// <returns></returns>
+		/// <param name="type">Type of segment</param>
+		/// <returns>Returns the first instance of a given segment type, else an empty segment</returns>
 		public Segment GetSegType(string type) {
 			type = type.ToUpper();
 			foreach (var s in _segments) {
@@ -181,7 +181,7 @@ namespace EDIParser {
 		/// <summary>
 		/// Returns the first instance of a given segment type, else throws an exception
 		/// </summary>
-		/// <param name="type"></param>
+		/// <param name="type">Type of segment</param>
 		/// <returns></returns>
 		public Segment GetRequiredSegType(string type) {
 			type = type.ToUpper();
@@ -197,7 +197,7 @@ namespace EDIParser {
 		/// <summary>
 		/// Gets all the segments of a specified type'
 		/// </summary>
-		/// <param name="type"></param>
+		/// <param name="type">Desired segment type</param>
 		/// <returns>A list of segments</returns>
 		public List<Segment> GetAllSegmentsOfType(string type) {
 			List<Segment> retVal = new List<Segment>();
@@ -215,8 +215,8 @@ namespace EDIParser {
 		/// <summary>
 		/// Defines and sets the segments by type so the header, details, and trailers can be worked with
 		/// </summary>
-		/// <param name="itemLevelType"></param>
-		/// <param name="trailerType"></param>s
+		/// <param name="itemLevelType">The segment which is used for the line items</param>
+		/// <param name="trailerType">The segment that defines being at the start of the trailer</param>s
 		public void DefineSegmentGroups(string itemLevelType, string trailerType) {
 			//0 header, 1 item, 2 trailer 
 			int position = 0;
@@ -258,8 +258,8 @@ namespace EDIParser {
 		/// <summary>
 		/// Same as the other but if the start of the trailer isn't consistent
 		/// </summary>
-		/// <param name="itemLevelType"></param>
-		/// <param name="trailerTypes"></param>s
+		/// <param name="itemLevelType">The segment which is used for the line items</param>
+		/// <param name="trailerTypes">The segments that define being at the start of the trailer</param>s
 		public void DefineSegmentGroups(string itemLevelType, string[] trailerTypes) {
 			//0 header, 1 item, 2 trailer 
 			int position = 0;
@@ -298,6 +298,11 @@ namespace EDIParser {
 			}
 		}
 
+		/// <summary>
+		/// Determines if a given N1 exists
+		/// </summary>
+		/// <param name="type">Type of N1 loop</param>
+		/// <returns>If the N1 loop exists</returns>
 		public bool DoesN1LoopExist(string type) {
 			foreach (var segment in _segments) {
 				if (segment.type == "N1" && segment.GetElement(1) == type) {
@@ -309,10 +314,10 @@ namespace EDIParser {
 		}
 
 		/// <summary>
-		/// Gets the entirety of the N1 Loop
+		/// Gets the entirety of an N1 Loop
 		/// </summary>
-		/// <param name="qualifier"></param>
-		/// <returns></returns>
+		/// <param name="qualifier">Type of N1 loop</param>
+		/// <returns>List of segments containing an N1 loop</returns>
 		public List<Segment> getWholeN1Loop(string qualifier) {
 			List<Segment> n1Loop = new List<Segment>();
 
@@ -342,7 +347,7 @@ namespace EDIParser {
 		/// <summary>
 		/// Gets the N1, N2, N3, and N4 of a given loop
 		/// </summary>
-		/// <param name="qualifier"></param>
+		/// <param name="qualifier">Type of N1 loop</param>
 		/// <returns></returns>
 		public List<Segment> getN1LoopOfType(string qualifier) {
 			qualifier = qualifier.ToUpper();
@@ -357,8 +362,8 @@ namespace EDIParser {
 		/// <summary>
 		/// this is quicker since it just runs through the header if it's defined
 		/// </summary>
-		/// <param name="qualifier"></param>
-		/// <returns></returns>
+		/// <param name="qualifier">Type of N1 qualifier</param>
+		/// <returns>N1 loop</returns>
 		private List<Segment> DoN1FromHeader(string qualifier) {
 			List<Segment> n1Loop = new List<Segment>();
 
@@ -387,8 +392,8 @@ namespace EDIParser {
 		/// <summary>
 		/// This s the old way of doing it, iterating through the whole document
 		/// </summary>
-		/// <param name="qualifier"></param>
-		/// <returns></returns>
+		/// <param name="qualifier">Type of N1 qualifier</param>
+		/// <returns>List of segments</returns>
 		private List<Segment> DoN1FromDocument(string qualifier) {
 			List<Segment> n1Loop = new List<Segment>();
 
@@ -417,7 +422,7 @@ namespace EDIParser {
 		/// <summary>
 		/// Grabs every N1-N4 loop
 		/// </summary>
-		/// <returns></returns>
+		/// <returns>A list of segment groups with all N1 loops</returns>
 		public List<SegmentGroup> GetAllN1Loops() {
 			List<SegmentGroup> retVal = new List<SegmentGroup>();
 
@@ -444,8 +449,8 @@ namespace EDIParser {
 		/// returns a segment with a specific pattern, null/empty/whitespaces are wildcards&#xA;
 		/// It's faster to grab from the specific part of the document if you know where it is
 		/// </summary>
-		/// <param name="type"></param>
-		/// <param name="pattern"></param>
+		/// <param name="type">type of segment</param>
+		/// <param name="pattern">Additional specific elements desired</param>
 		/// <returns></returns>
 		public Segment GetSegmentWithPattern(string type, params string[] pattern) {
 			foreach (var seg in _segments) {
@@ -472,10 +477,10 @@ namespace EDIParser {
 		/// <summary>
 		/// Gets the N1, N2, N3, N4 and addition fields of a given loop
 		/// </summary>
-		/// <param name="qualifier"></param>
-		/// <param name="additionFields"></param>
-		/// <returns></returns>
-		public List<Segment> getN1LoopOfType(string qualifier, string[] additionFields) {
+		/// <param name="qualifier">Type of N1 loop</param>
+		/// <param name="additionFields">Additional segments desired</param>
+		/// <returns>All desired segments from a given N1 loop</returns>
+		public List<Segment> getN1LoopOfType(string qualifier, params string[] additionFields) {
 			List<Segment> n1Loop = new List<Segment>();
 
 			string[] types = {"N2", "N3", "N4"};
@@ -507,10 +512,10 @@ namespace EDIParser {
 		/// <summary>
 		/// Same as get n1 loop, but as a segment group
 		/// </summary>
-		/// <param name="qualifier"></param>
-		/// <param name="additionFields"></param>
-		/// <returns></returns>
-		public SegmentGroup getN1LoopOfTypeSegmentGroup(string qualifier, string[] additionFields) {
+		/// <param name="qualifier">Type of N1 loop</param>
+		/// <param name="additionFields">Additional segments desired</param>
+		/// <returns>All desired segments from a given N1 loop</returns>
+		public SegmentGroup getN1LoopOfTypeSegmentGroup(string qualifier, params string[] additionFields) {
 			SegmentGroup n1Loop = new SegmentGroup();
 
 			var n1s = getN1LoopOfType(qualifier, additionFields);
@@ -525,7 +530,7 @@ namespace EDIParser {
 		/// <summary>
 		/// Grabs every message segment in the document
 		/// </summary>
-		/// <returns></returns>
+		/// <returns>All segments of types N9/MSG/MTX</returns>
 		public List<Segment> GetAllMessageSegments() {
 			string[] types = {"N9", "MTX", "MSG"};
 			List<Segment> retval = new List<Segment>();
@@ -557,7 +562,7 @@ namespace EDIParser {
 		/// <summary>
 		/// Checks the CTT count based on the count of the countType
 		/// </summary>
-		/// <param name="counterType"></param>
+		/// <param name="counterType">Segment to count</param>
 		/// <returns>-1 if different, 0 if no CTT found, 1 if the counts are the same/returns>
 		public int CheckCTTCountDefineCounter(string counterType) {
 			Segment ctt = GetSegType("CTT");
@@ -579,9 +584,9 @@ namespace EDIParser {
 		}
 
 		/// <summary>
-		/// Returns a segment group
+		/// Returns a segment group containing all N1 loop
 		/// </summary>
-		/// <param name="qualifier"></param>
+		/// <param name="qualifier">Type of N1 loop</param>
 		/// <returns></returns>
 		public SegmentGroup getN1LoopOfTypeSegmentGroup(string qualifier) {
 			SegmentGroup n1Loop = new SegmentGroup();
@@ -594,8 +599,6 @@ namespace EDIParser {
 
 			return n1Loop;
 		}
-
-		public List<Segment> Segments => _segments;
 
 		/// <summary>
 		/// Makes the segments in the document Enumerable

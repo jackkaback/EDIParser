@@ -291,7 +291,7 @@ namespace EDIParser {
 		/// <summary>
 		/// Grabs every message segment in the segment group
 		/// </summary>
-		/// <returns></returns>
+		/// <returns>All message segments in the segment group</returns>
 		public List<Segment> GetAllMessageSegments() {
 			string[] types = {"N9", "MTX", "MSG"};
 			List<Segment> retval = new List<Segment>();
