@@ -18,7 +18,7 @@ namespace EDIParser {
 		/// <summary>
 		/// Generates the envelope at first
 		/// </summary>
-		/// <param name="gs"></param>
+		/// <param name="gs">GS Segment</param>
 		public Envelope(Segment gs) {
 			_GS = gs;
 			type = _GS[1];
@@ -27,8 +27,8 @@ namespace EDIParser {
 		/// <summary>
 		/// Generates the envelope and can throw an error if the counts don't match
 		/// </summary>
-		/// <param name="gs"></param>
-		/// <param name="throwError"></param>
+		/// <param name="gs">GS Segment</param>
+		/// <param name="throwError">Throw an error if the counts don't match'</param>
 		public Envelope(Segment gs, bool throwError) {
 			_GS = gs;
 			type = _GS[1];
@@ -70,7 +70,7 @@ namespace EDIParser {
 		/// <summary>
 		/// gets the document at position index
 		/// </summary>
-		/// <param name="index"></param>
+		/// <param name="index">Index of document desired</param>
 		public Document this[int index] {
 			get => _Docs[index];
 		}
@@ -150,7 +150,7 @@ namespace EDIParser {
 		/// <summary>
 		/// Throws an error if the throw flag is set and document counts don't match
 		/// </summary>
-		/// <exception cref="Exception"></exception>
+		/// <exception cref="Exception">GE count and documents contained don't match'</exception>
 		public void CheckError() {
 			if (_throwError && !DoDocumentCountsMatch()) {
 				throw new Exception("GE count and document count's do not match'");

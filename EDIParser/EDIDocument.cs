@@ -14,7 +14,7 @@ namespace EDIParser {
 		/// <summary>
 		/// Generates the entire EDI document
 		/// </summary>
-		/// <param name="file"></param>
+		/// <param name="file">Text of the file</param>
 		public EDIDocument(string file) {
 			var elementTerm = file[104];
 			var subElement = file[105];
@@ -63,7 +63,7 @@ namespace EDIParser {
 		/// <summary>
 		/// Generates the EDI document from the streamreader, stream reader needs to be at the start
 		/// </summary>
-		/// <param name="reader"></param>
+		/// <param name="reader">reader for the text</param>
 		public EDIDocument(StreamReader reader) {
 			string file = reader.ReadToEnd();
 			reader.Close();
@@ -114,9 +114,9 @@ namespace EDIParser {
 		/// <summary>
 		/// Generates the entire EDI document, and can throw an error if any piece of data doesn't match
 		/// </summary>
-		/// <param name="file"></param>
-		/// <param name="throwError"></param>
-		/// <exception cref="Exception"></exception>
+		/// <param name="file">Text of the file</param>
+		/// <param name="throwError">Throw an error if the IEA count and envelope counts don't match</param>
+		/// <exception cref="Exception">Counts do not match</exception>
 		public EDIDocument(string file, bool throwError) {
 			var elementTerm = file[104];
 			var subElement = file[105];
@@ -175,9 +175,9 @@ namespace EDIParser {
 		/// <summary>
 		/// Generates the entire EDI document, and can throw an error if any piece of data doesn't match
 		/// </summary>
-		/// <param name="reader"></param>
-		/// <param name="throwError"></param>
-		/// <exception cref="Exception"></exception>
+		/// <param name="reader">reader of the document</param>
+		/// <param name="throwError">Throw an error if the IEA count and envelope counts don't match</param>
+		/// <exception cref="Exception">Counts do not match</exception>
 		public EDIDocument(StreamReader reader, bool throwError) {
 			string file = reader.ReadToEnd();
 			reader.Close();
@@ -236,8 +236,8 @@ namespace EDIParser {
 		/// <summary>
 		/// Gets the first instance of an envelope or returns an empty envelope
 		/// </summary>
-		/// <param name="type"></param>
-		/// <returns></returns>
+		/// <param name="type">Type of GS envelope</param>
+		/// <returns>Envelope of given type if it exists</returns>
 		public Envelope GetEnvelopeOfType(string type) {
 			type = type.ToUpper();
 			foreach (var e in _envelopes) {
@@ -252,8 +252,8 @@ namespace EDIParser {
 		/// <summary>
 		/// Says if an Envelope exists
 		/// </summary>
-		/// <param name="type"></param>
-		/// <returns></returns>
+		/// <param name="type">Type of GS envelope</param>
+		/// <returns>If the desired element exists</returns>
 		public bool DoesEnvelopeExist(string type) {
 			type = type.ToUpper();
 			foreach (var e in _envelopes) {
@@ -268,8 +268,8 @@ namespace EDIParser {
 		/// <summary>
 		/// Gets the first instance of an envelope, or throws an error
 		/// </summary>
-		/// <param name="type"></param>
-		/// <returns></returns>
+		/// <param name="type">Type of desired envelope</param>
+		/// <returns>Returns the first instance of the given envelope type</returns>
 		public Envelope GetRequiredEnvelope(string type) {
 			type = type.ToUpper();
 			foreach (var e in _envelopes) {
